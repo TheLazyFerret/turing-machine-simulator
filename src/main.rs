@@ -5,6 +5,7 @@
 //!
 //! Main file of the crate.
 
+#![allow(dead_code)]
 mod tape;
 
 fn main() {}
