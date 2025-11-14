@@ -1,0 +1,14 @@
+[package]
+name = "turing-machine-rs"
+description = "Turing machine implementation."
+
+readme = "README.md"
+license = "MIT"
+license-file = "LICENSE"
+
+repository = "https://github.com/TheLazyFerret/turing-machine-rs"
+
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
