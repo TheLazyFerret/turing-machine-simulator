@@ -4,7 +4,6 @@ description = "Turing machine implementation."
 
 readme = "README.md"
 license = "MIT"
-license-file = "LICENSE"
 
 repository = "https://github.com/TheLazyFerret/turing-machine-rs"
 
