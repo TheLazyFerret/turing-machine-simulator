@@ -6,7 +6,7 @@
 //! Module representing a turing machine.
 
 use core::fmt;
-use std::ops::{Neg, Sub};
+use std::ops::{Add, Neg, Sub};
 
 /// Represents a blank in a tape's cell.
 const BLANK: char = '\0';
@@ -27,11 +27,7 @@ impl Tape {
   }
 
   /// Moves the head one cell to right. If the cell is not defined, create a blank one.
-  pub fn move_right(&mut self) {
-    if self.head >= 0 {
-
-    }
-  }
+  pub fn move_right(&mut self) {}
 
   /// Moves the head one cell to left. If the cell is not defined, create a blank one.
   pub fn move_left(&mut self) {}
@@ -39,10 +35,15 @@ impl Tape {
   /// Returns the value in the head position.
   pub fn read(&self) -> char {
     if self.head >= 0 {
-      *self.p_half.get(self.normalized_head()).expect("weird error accesing for read")
-    }
-    else {
-      *self.n_half.get(self.normalized_head()).expect("weird error accesing for read")
+      *self
+        .p_half
+        .get(self.normalized_head())
+        .expect("weird error accesing for read")
+    } else {
+      *self
+        .n_half
+        .get(self.normalized_head())
+        .expect("weird error accesing for read")
     }
   }
 
@@ -50,10 +51,15 @@ impl Tape {
   pub fn write(&mut self, f: char) {
     let pos = self.normalized_head();
     if self.head >= 0 {
-      *self.p_half.get_mut(pos).expect("weird error accesing for write") = f;
-    }
-    else {
-      *self.p_half.get_mut(pos).expect("weird error accesing for write") = f;
+      *self
+        .p_half
+        .get_mut(pos)
+        .expect("weird error accesing for write") = f;
+    } else {
+      *self
+        .p_half
+        .get_mut(pos)
+        .expect("weird error accesing for write") = f;
     }
   }
 
@@ -62,7 +68,6 @@ impl Tape {
     self.clean();
     self.p_half = f.chars().collect();
   }
-
 }
 
 /// Private implementation for Tape struct.
@@ -80,8 +85,7 @@ impl Tape {
   fn normalized_head(&self) -> usize {
     if self.head >= 0 {
       self.head.cast_unsigned()
-    }
-    else {
+    } else {
       self.head.neg().cast_unsigned().sub(1)
     }
   }
@@ -115,5 +119,25 @@ mod tests {
     x.load_string("perro");
     assert_eq!(*x.p_half.as_slice().first().unwrap(), 'p');
     assert_eq!(*x.p_half.as_slice().last().unwrap(), 'o');
+  }
+
+  #[test]
+  fn test_write_read_head() {
+    let mut x = Tape::new();
+    x.load_string("perro");
+    x.head = 1;
+    x.write('@');
+    assert_eq!(x.read(), '@');
+  }
+
+  #[test]
+  fn test_normalization() {
+    let mut x = Tape::new();
+    x.head = 4;
+    assert_eq!(x.normalized_head(), 4);
+    x.head = 0;
+    assert_eq!(x.normalized_head(), 0);
+    x.head = -2;
+    assert_eq!(x.normalized_head(), 1);
   }
 }
