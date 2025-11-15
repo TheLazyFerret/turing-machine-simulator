@@ -7,14 +7,6 @@
 
 use std::fmt::Display;
 
-/// Simple enum representing the possible movements in each transition.
-#[derive(Clone, Copy, Debug)]
-pub enum Direction {
-  Left,
-  Right,
-  Stop,
-}
-
 /// Struct representing each one of the transitions in the Turing machine.
 #[derive(Clone, Copy, Debug)]
 pub struct Transition {
@@ -53,6 +45,14 @@ impl Display for Transition {
       self.read, self.write, self.state, self.direction
     )
   }
+}
+
+/// Simple enum representing the possible movements in each transition.
+#[derive(Clone, Copy, Debug)]
+pub enum Direction {
+  Left,
+  Right,
+  Stop,
 }
 
 impl Display for Direction {
