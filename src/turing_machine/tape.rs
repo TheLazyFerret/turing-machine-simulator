@@ -10,11 +10,14 @@ use std::ops::{Neg, Sub};
 
 /// Represents a blank in a tape's cell.
 const BLANK: char = '\0';
-
 /// How the blanks will be printed.
 const BLANK_REP: char = 'β';
 
 /// Struct representing a Single tape.
+/// The head represents the relative position inside the two vectors.
+/// - ">= 0" relative position inside p_half vector.
+/// - "< 0"  relative position inside n_half vector.
+/// For getting the absolute position in the vectors, see fn absolute_pos()
 #[derive(Clone, Debug)]
 pub struct Tape {
   n_half: Vec<char>,
@@ -42,7 +45,7 @@ impl Tape {
   /// It is only defined to create a new cell if the head is in the positive side.
   pub fn move_right(&mut self) {
     self.head += 1;
-    let norm = self.normalized_head();
+    let norm = self.absolute_pos();
     if self.head >= 0 && self.p_half.get(norm).is_none() {
       self.p_half.push(BLANK);
     }
@@ -52,7 +55,7 @@ impl Tape {
   /// It is only defined to create a new cell if the head is in the negative half.
   pub fn move_left(&mut self) {
     self.head -= 1;
-    let norm = self.normalized_head();
+    let norm = self.absolute_pos();
     if self.head < 0 && self.n_half.get(norm).is_none() {
       self.n_half.push(BLANK);
     }
@@ -63,19 +66,19 @@ impl Tape {
     if self.head >= 0 {
       *self
         .p_half
-        .get(self.normalized_head())
+        .get(self.absolute_pos())
         .expect("weird error accesing for read")
     } else {
       *self
         .n_half
-        .get(self.normalized_head())
+        .get(self.absolute_pos())
         .expect("weird error accesing for read")
     }
   }
 
   /// Write a char in the head position.
   pub fn write(&mut self, f: char) {
-    let pos = self.normalized_head();
+    let pos = self.absolute_pos();
     if self.head >= 0 {
       *self
         .p_half
@@ -89,10 +92,9 @@ impl Tape {
     }
   }
 
-  /// Loads a string into the Tape.
-  pub fn load_string(&mut self, f: &str) {
-    self.clean();
-    self.p_half = f.chars().collect();
+  /// Returns the size of the Tape, being the the sum of both halfs.
+  pub fn size(&self) -> usize {
+    self.n_half.len() + self.p_half.len()
   }
 }
 
@@ -105,10 +107,10 @@ impl Tape {
     self.head = 0;
   }
 
-  /// Normalize the value of the head to peak in one of the vectors.
+  /// Returns the absolute position of the head in the vectors.
   ///  - head >= 0 returns head
   ///  - head < 0 returns head - 1
-  fn normalized_head(&self) -> usize {
+  fn absolute_pos(&self) -> usize {
     if self.head >= 0 {
       self.head.cast_unsigned()
     } else {
@@ -137,6 +139,9 @@ fn print_sym(x: char) -> char {
 impl fmt::Display for Tape {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     for x in self.n_half.iter().enumerate() {
+      // From the absolute position in the n_half, get the relative position.
+      // absolute position = 2 relative position = -3
+      //   relative pos = - (n_half.len() - absolute_pos)
       let relative_pos = (self.n_half.len().cast_signed() - x.0.cast_signed()).neg();
       if relative_pos == self.head {
         write!(f, "|[{}]", print_sym(*x.1))?;
@@ -145,6 +150,7 @@ impl fmt::Display for Tape {
       }
     }
     for x in self.p_half.iter().enumerate() {
+      // Absolute position coincide with relative position.
       let relative_pos = x.0.cast_signed();
       if relative_pos == self.head {
         write!(f, "|[{}]", print_sym(*x.1))?;
@@ -180,11 +186,11 @@ mod tests {
   fn test_normalization() {
     let mut x = Tape::new();
     x.head = 4;
-    assert_eq!(x.normalized_head(), 4);
+    assert_eq!(x.absolute_pos(), 4);
     x.head = 0;
-    assert_eq!(x.normalized_head(), 0);
+    assert_eq!(x.absolute_pos(), 0);
     x.head = -2;
-    assert_eq!(x.normalized_head(), 1);
+    assert_eq!(x.absolute_pos(), 1);
   }
 
   #[test]
