@@ -1,13 +1,13 @@
-//! Author: TheLazyFerret (<https://github.com/TheLazyFerret>)
+//! Author: TheLazyFerret <https://github.com/TheLazyFerret>
 //! Copyright (c) 2025 TheLazyFerret
 //!   Licensed under the MIT license.
 //!   See LICENSE file in the project root for full license information.
 //!
-//! Transition struct module.
+//! Single transition struct module.
 
 use std::fmt::Display;
 
-/// Struct representing each one of the transitions in the Turing machine.
+/// Struct representing a single transition in a single tape.
 #[derive(Clone, Copy, Debug)]
 pub struct Transition {
   /// The character readed. Only for printing purposes.
@@ -31,9 +31,9 @@ impl Transition {
     }
   }
 
-  /// Returns the internal value, Without the read.
-  pub fn get(&self) -> (char, usize, Direction) {
-    (self.write, self.state, self.direction)
+  /// Returns the internal value.
+  pub fn get(&self) -> (char, char, usize, Direction) {
+    (self.read, self.write, self.state, self.direction)
   }
 }
 
@@ -68,7 +68,7 @@ impl Display for Direction {
 
 #[cfg(test)]
 mod tests {
-  use crate::turing_machine::transition::Transition;
+  use super::Transition;
 
   #[test]
   fn test_display() {

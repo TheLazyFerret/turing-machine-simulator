@@ -3,9 +3,6 @@
 //!   Licensed under the MIT license.
 //!   See LICENSE file in the project root for full license information.
 //!
-//! Main file of the crate.
+//! Transition function module.
 
-#[allow(dead_code)]
-mod turing_machine;
-
-fn main() {}
+pub mod transition;
