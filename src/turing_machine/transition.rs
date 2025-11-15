@@ -30,12 +30,12 @@ pub struct Transition {
 
 impl Transition {
   /// Builds a new transition from parameters.
-  pub fn new(rd: char, wr: char, ns: usize, dir: Direction) -> Self {
+  pub fn new(t: (char, char, usize, Direction)) -> Self {
     Transition {
-      read: rd,
-      write: wr,
-      state: ns,
-      direction: dir,
+      read: t.0,
+      write: t.1,
+      state: t.2,
+      direction: t.3,
     }
   }
 
@@ -72,7 +72,7 @@ mod tests {
 
   #[test]
   fn test_display() {
-    let x = Transition::new('a', 'b', 2, super::Direction::Left);
+    let x = Transition::new(('a', 'b', 2, super::Direction::Left));
     let str = x.to_string();
     assert_eq!(str, "[a, b, 2, L]");
   }

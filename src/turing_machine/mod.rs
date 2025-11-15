@@ -5,9 +5,7 @@
 //!
 //! Turing machine struct module.
 
-#[allow(dead_code)]
 mod tape;
-#[allow(dead_code)]
 mod transition;
 
 use crate::turing_machine::tape::Tape;
@@ -27,4 +25,16 @@ pub struct TuringMachine {
   transition: Vec<HashMap<char, Transition>>,
   /// Set of the final acceptance states.
   acceptance: HashSet<usize>,
+}
+
+/// Public implementation.
+impl TuringMachine {
+
+}
+
+/// Private implementation.
+impl TuringMachine {
+  fn add_transition(&mut self, ) {
+
+  }
 }
