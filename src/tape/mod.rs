@@ -27,14 +27,18 @@ impl Tape {
   }
 
   /// Moves the head one cell to right. If the cell is not defined, create a blank one.
-  pub fn move_right(&mut self) {}
+  pub fn move_right(&mut self) {
+    if self.head >= 0 {
+
+    }
+  }
 
   /// Moves the head one cell to left. If the cell is not defined, create a blank one.
   pub fn move_left(&mut self) {}
 
   /// Returns the value in the head position.
   pub fn read(&self) -> char {
-    if self.head.is_positive() {
+    if self.head >= 0 {
       *self.p_half.get(self.normalized_head()).expect("weird error accesing for read")
     }
     else {
@@ -45,7 +49,7 @@ impl Tape {
   /// Write a char in the head position.
   pub fn write(&mut self, f: char) {
     let pos = self.normalized_head();
-    if self.head.is_positive() {
+    if self.head >= 0 {
       *self.p_half.get_mut(pos).expect("weird error accesing for write") = f;
     }
     else {
@@ -74,7 +78,7 @@ impl Tape {
   ///  - head >= 0 returns head
   ///  - head < 0 returns head - 1
   fn normalized_head(&self) -> usize {
-    if self.head.is_positive() {
+    if self.head >= 0 {
       self.head.cast_unsigned()
     }
     else {
