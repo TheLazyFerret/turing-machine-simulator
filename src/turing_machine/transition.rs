@@ -1,4 +1,4 @@
-//! Author: TheLazyFerret (https://github.com/TheLazyFerret)
+//! Author: TheLazyFerret (<https://github.com/TheLazyFerret>)
 //! Copyright (c) 2025 TheLazyFerret
 //!   Licensed under the MIT license.
 //!   See LICENSE file in the project root for full license information.
@@ -18,16 +18,40 @@ pub enum Direction {
 /// Struct representing each one of the transitions in the Turing machine.
 #[derive(Clone, Copy, Debug)]
 pub struct Transition {
+  /// The character readed. Only for printing purposes.
+  read: char,
+  /// The character that will be written.
   write: char,
-  next_state: usize,
+  /// The next state.
+  state: usize,
+  /// The direction the head will take.
   direction: Direction,
 }
 
-impl Transition {}
+impl Transition {
+  /// Builds a new transition from parameters.
+  pub fn new(rd: char, wr: char, ns: usize, dir: Direction) -> Self {
+    Transition {
+      read: rd,
+      write: wr,
+      state: ns,
+      direction: dir,
+    }
+  }
+
+  /// Returns the internal value, Without the read.
+  pub fn get(&self) -> (char, usize, Direction) {
+    (self.write, self.state, self.direction)
+  }
+}
 
 impl Display for Transition {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-    todo!()
+    write!(
+      f,
+      "[{}, {}, {}, {}]",
+      self.read, self.write, self.state, self.direction
+    )
   }
 }
 
@@ -39,5 +63,17 @@ impl Display for Direction {
       | Direction::Stop => write!(f, "S")?,
     }
     Ok(())
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use crate::turing_machine::transition::Transition;
+
+  #[test]
+  fn test_display() {
+    let x = Transition::new('a', 'b', 2, super::Direction::Left);
+    let str = x.to_string();
+    assert_eq!(str, "[a, b, 2, L]");
   }
 }
