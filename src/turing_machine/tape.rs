@@ -159,7 +159,7 @@ impl fmt::Display for Tape {
 
 #[cfg(test)]
 mod tests {
-  use crate::tape::{BLANK, Tape};
+  use crate::turing_machine::tape::{BLANK, Tape};
 
   #[test]
   fn test_from_string() {

@@ -3,8 +3,6 @@
 //!   Licensed under the MIT license.
 //!   See LICENSE file in the project root for full license information.
 //!
-//! Main file of the crate.
+//! Turing machine struct module.
 
-mod turing_machine;
-
-fn main() {}
+mod tape;
