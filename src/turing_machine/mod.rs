@@ -8,12 +8,11 @@
 mod tape;
 mod tape_function;
 
-use crate::turing_machine::tape::Tape;
 use core::fmt;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
 /// Maximum ammount of steps a single run can do before being cancelled.
-const MAX_COUNT: usize = 500;
+const MAX_STEP: usize = 500;
 
 /// Struct representing a deterministic Turing machine.
 #[derive(Clone, Debug)]
@@ -22,11 +21,8 @@ pub struct TuringMachine {
   tapes_count: usize,
   /// Initial transition.
   initial: usize,
-  /// - Vec: each position representing an state
-  /// - Hashmap Key: readed character.
-  /// - Hashmap Value: (write, next state, direction).
-
-  //tr_func: [TapeFunction; TAPES_COUNT],
+  /// Transition function.
+  // todo~!
   /// Set of the final acceptance states.
   acceptance: HashSet<usize>,
 }
@@ -39,17 +35,6 @@ impl TuringMachine {
   }
 
   pub fn run(&self, s: &str) -> Result<bool, TuringMachineError> {
-    let mut tapes: Vec<Tape> = Vec::new();
-    tapes.resize_with(self.tapes_count, Default::default);
-    let mut current_state = self.initial;
-    let mut count = 0;
-    while self.run_step(&mut current_state)? {
-      count += 1;
-      if count >= MAX_COUNT {
-        return Err(TuringMachineError::MaxCount);
-      };
-    }
-
     todo!()
   }
 }
@@ -71,11 +56,7 @@ impl TuringMachine {
 
 impl Default for TuringMachine {
   fn default() -> Self {
-    TuringMachine {
-      tapes_count: 1,
-      initial: 0,
-      acceptance: HashSet::new(),
-    }
+    todo!()
   }
 }
 
@@ -84,16 +65,18 @@ impl Default for TuringMachine {
 pub enum TuringMachineError {
   /// Multiple transitions with same (state, read).
   Indeterminancy,
-  MaxCount,
+  MaxStepsReached,
 }
 
 impl fmt::Display for TuringMachineError {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     match self {
       | TuringMachineError::Indeterminancy => {
-        write!(f, "Multiple transitions for the same pair (state, readed)")?
+        write!(f, "Multiple transitions for the same pair state-readed")?
       },
-      | TuringMachineError::MaxCount => write!(f, "Reached the maximum ammount of transitions")?,
+      | TuringMachineError::MaxStepsReached => {
+        write!(f, "Run stopped, reached the maximum ammount of steps")?
+      },
     }
     Ok(())
   }
