@@ -1,4 +1,4 @@
-//! Author: TheLazyFerret (https://github.com/TheLazyFerret)
+//! Author: TheLazyFerret (<https://github.com/TheLazyFerret>)
 //! Copyright (c) 2025 TheLazyFerret
 //!   Licensed under the MIT license.
 //!   See LICENSE file in the project root for full license information.
@@ -14,14 +14,13 @@ const BLANK: char = '\0';
 const BLANK_REP: char = 'β';
 
 /// Struct representing a Single tape.
-/// The head represents the relative position inside the two vectors.
-/// - ">= 0" relative position inside p_half vector.
-/// - "< 0"  relative position inside n_half vector.
-/// For getting the absolute position in the vectors, see fn absolute_pos()
 #[derive(Clone, Debug)]
 pub struct Tape {
+  /// When the head (relative position) is < 0, the Tape will work in this vector.
   n_half: Vec<char>,
+  /// When the head (relative position) is >= 0, the Tape will work in this vector.
   p_half: Vec<char>,
+  /// Relative position of the tape.
   head: isize,
 }
 
