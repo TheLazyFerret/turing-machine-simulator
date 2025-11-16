@@ -8,32 +8,41 @@
 use std::fmt::Display;
 
 /// Struct representing a single transition in a single tape.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Transition {
+  /// The current state.
+  current_state: usize,
   /// The character readed. Only for printing purposes.
   read: char,
   /// The character that will be written.
   write: char,
   /// The next state.
-  state: usize,
+  next_state: usize,
   /// The direction the head will take.
   direction: Direction,
 }
 
 impl Transition {
   /// Builds a new transition from parameters.
-  pub fn new(t: (char, char, usize, Direction)) -> Self {
+  pub fn new(t: (usize, char, char, usize, Direction)) -> Self {
     Transition {
-      read: t.0,
-      write: t.1,
-      state: t.2,
-      direction: t.3,
+      current_state: t.0,
+      read: t.1,
+      write: t.2,
+      next_state: t.3,
+      direction: t.4,
     }
   }
 
   /// Returns the internal value.
-  pub fn get(&self) -> (char, char, usize, Direction) {
-    (self.read, self.write, self.state, self.direction)
+  pub fn get(&self) -> (usize, char, char, usize, Direction) {
+    (
+      self.current_state,
+      self.read,
+      self.write,
+      self.next_state,
+      self.direction,
+    )
   }
 }
 
@@ -41,14 +50,14 @@ impl Display for Transition {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     write!(
       f,
-      "[{}, {}, {}, {}]",
-      self.read, self.write, self.state, self.direction
+      "[{}, {}, {}, {}, {}]",
+      self.current_state, self.read, self.write, self.next_state, self.direction
     )
   }
 }
 
 /// Simple enum representing the possible movements in each transition.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Direction {
   Left,
   Right,
@@ -72,8 +81,8 @@ mod tests {
 
   #[test]
   fn test_display() {
-    let x = Transition::new(('a', 'b', 2, super::Direction::Left));
+    let x = Transition::new((1, 'a', 'b', 2, super::Direction::Left));
     let str = x.to_string();
-    assert_eq!(str, "[a, b, 2, L]");
+    assert_eq!(str, "[1, a, b, 2, L]");
   }
 }
