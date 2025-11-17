@@ -9,6 +9,7 @@ mod tape;
 mod tape_function;
 mod transition;
 
+use crate::turing_machine::tape::Tape;
 use crate::turing_machine::tape_function::TapeFunction;
 use crate::turing_machine::transition::Transition;
 use std::collections::HashSet;
@@ -33,18 +34,24 @@ pub struct TuringMachine {
 
 /// Public implementation.
 impl TuringMachine {
-  /// Returns a new, empty TuringMachine Instance.
-  pub fn new(ntapes: usize) -> Self {
-    let mut f: Vec<TapeFunction> = Vec::with_capacity(ntapes);
-    f.resize_with(ntapes, || TapeFunction::new());
-    TuringMachine {
-      initial: 0,
-      ft: f,
-      acceptance: HashSet::new(),
+  /// Creates a new TuringMachine instance.
+  pub fn new_load(
+    ntapes: usize, init: usize, accept: &HashSet<usize>, tr_func: &[&[Transition]],
+  ) -> Result<Self, TuringMachineError> {
+    let mut tmachine = TuringMachine {
+      initial: init,
+      ft: Vec::with_capacity(ntapes),
+      acceptance: accept.clone(),
+    };
+    tmachine.ft.resize_with(ntapes, || TapeFunction::new());
+    for t in tr_func.iter() {
+      tmachine.add_transition(t)?;
     }
+    Ok(tmachine)
   }
 
-  pub fn run(&self, s: &str) -> Result<bool, TuringMachineError> {
+  /// Test is a string is accepted by the Turing machine
+  pub fn test(&self, s: &str) -> Result<bool, TuringMachineError> {
     todo!()
   }
 }
@@ -108,21 +115,31 @@ impl fmt::Display for TuringMachineError {
 
 #[cfg(test)]
 mod test {
+  use std::collections::HashSet;
+
   use crate::turing_machine::{
-    TuringMachine,
+    TuringMachine, TuringMachineError,
     transition::{Direction, Transition},
   };
 
-  #[test]
-  fn test_add_transition() {
-    let mut x = TuringMachine::new(2);
-    let tr1 = Transition::new((0, 'a', 'b', 2, Direction::Left));
-    let tr2 = Transition::new((0, 'b', 'c', 2, Direction::Stop));
-    let tr3 = Transition::new((0, 'a', 'c', 4, Direction::Stop));
-    let tr4 = Transition::new((1, 'a', 'a', 3, Direction::Right));
+  fn new_load() -> Result<TuringMachine, TuringMachineError> {
+    let tr1 = Transition::new((0, 'a', 'b', 1, Direction::Left));
+    let tr2 = Transition::new((0, 'b', 'b', 1, Direction::Right));
+    let tr3 = Transition::new((1, 'a', 'b', 2, Direction::Stop));
+    let tr4 = Transition::new((1, 'b', 'b', 2, Direction::Right));
+    let tr5 = Transition::new((2, 'a', 'a', 3, Direction::Stop));
+    let tr6 = Transition::new((2, 'b', 'a', 3, Direction::Left));
     let tr_vec1 = vec![tr1, tr2];
     let tr_vec2 = vec![tr3, tr4];
-    assert_eq!(x.add_transition(&tr_vec1).is_ok(), true); // All fine.
-    assert_eq!(x.add_transition(&tr_vec2).is_err(), true); // Forced indeterminancy in the first tape.
+    let tr_vec3 = vec![tr5, tr6];
+    let tr_func = vec![tr_vec1.as_slice(), tr_vec2.as_slice(), tr_vec3.as_slice()];
+    let mut acceptance = HashSet::new();
+    acceptance.insert(3);
+    TuringMachine::new_load(2, 0, &acceptance, tr_func.as_slice())
+  }
+
+  #[test]
+  fn test_new_load() {
+    new_load().unwrap();
   }
 }
