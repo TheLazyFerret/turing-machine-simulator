@@ -36,9 +36,9 @@ impl TapeFunction {
   }
 
   /// Returns an Option if the transition exists.
-  pub fn get(&self, state: usize, sym: char) -> Option<&Transition> {
-    let x = self.func.get(state)?;
-    x.get(&sym)
+  pub fn get(&self, p: (usize, char)) -> Option<&Transition> {
+    let x = self.func.get(p.0)?;
+    x.get(&p.1)
   }
 }
 
@@ -78,7 +78,7 @@ mod tests {
     let tr1 = Transition::new((0, 'a', 'b', 1, Direction::Right));
     let tr2 = Transition::new((0, 'b', 'c', 2, Direction::Left));
     assert_eq!(f.add(tr1), None);
-    assert_eq!(f.get(tr1.get().0, tr1.get().1), Some(&tr1));
-    assert_eq!(f.get(tr2.get().0, tr2.get().1), None);
+    assert_eq!(f.get((tr1.get().0, tr1.get().1)), Some(&tr1));
+    assert_eq!(f.get((tr2.get().0, tr2.get().1)), None);
   }
 }
