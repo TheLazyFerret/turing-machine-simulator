@@ -52,6 +52,8 @@ impl TuringMachine {
 
   /// Test is a string is accepted by the Turing machine
   pub fn test(&self, s: &str) -> Result<bool, TuringMachineError> {
+    let mut tapes = Vec::new();
+    tapes.resize_with(self.ft.len(), || Tape::new());
     todo!()
   }
 }
@@ -123,12 +125,12 @@ mod test {
   };
 
   fn new_load() -> Result<TuringMachine, TuringMachineError> {
-    let tr1 = Transition::new((0, 'a', 'b', 1, Direction::Left));
+    let tr1 = Transition::new((0, 'a', 'a', 1, Direction::Left));
     let tr2 = Transition::new((0, 'b', 'b', 1, Direction::Right));
-    let tr3 = Transition::new((1, 'a', 'b', 2, Direction::Stop));
+    let tr3 = Transition::new((1, 'a', 'a', 2, Direction::Stop));
     let tr4 = Transition::new((1, 'b', 'b', 2, Direction::Right));
     let tr5 = Transition::new((2, 'a', 'a', 3, Direction::Stop));
-    let tr6 = Transition::new((2, 'b', 'a', 3, Direction::Left));
+    let tr6 = Transition::new((2, 'b', 'b', 3, Direction::Left));
     let tr_vec1 = vec![tr1, tr2];
     let tr_vec2 = vec![tr3, tr4];
     let tr_vec3 = vec![tr5, tr6];
