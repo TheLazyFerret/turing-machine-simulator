@@ -7,9 +7,10 @@
 
 mod tape;
 mod tape_function;
+mod transition;
 
 use crate::turing_machine::tape_function::TapeFunction;
-use crate::turing_machine::tape_function::transition::Transition;
+use crate::turing_machine::transition::Transition;
 use std::collections::HashSet;
 use std::fmt;
 
@@ -54,10 +55,19 @@ impl TuringMachine {
   /// Due the ammount of Tapes is known compile-time, it will take as parameters an array of
   fn add_transition(&mut self, trs: &[Transition]) -> Result<(), TuringMachineError> {
     if trs.len() != self.ft.len() {
-      return Err(TuringMachineError::NotEnoughTransition(trs.len(), self.ft.len()));
+      return Err(TuringMachineError::NotEnoughTransition(
+        trs.len(),
+        self.ft.len(),
+      ));
     }
     for t in trs.iter().enumerate() {
-      if self.ft.get_mut(t.0).expect("Unexpected error getting vector").add(*t.1).is_some() {
+      if self
+        .ft
+        .get_mut(t.0)
+        .expect("Unexpected error getting vector")
+        .add(*t.1)
+        .is_some()
+      {
         return Err(TuringMachineError::Indeterminancy);
       }
     }
@@ -98,8 +108,10 @@ impl fmt::Display for TuringMachineError {
 
 #[cfg(test)]
 mod test {
-    use crate::turing_machine::{TuringMachine, tape_function::transition::{Direction, Transition}};
-
+  use crate::turing_machine::{
+    TuringMachine,
+    transition::{Direction, Transition},
+  };
 
   #[test]
   fn test_add_transition() {
@@ -110,7 +122,7 @@ mod test {
     let tr4 = Transition::new((1, 'a', 'a', 3, Direction::Right));
     let tr_vec1 = vec![tr1, tr2];
     let tr_vec2 = vec![tr3, tr4];
-    assert_eq!(x.add_transition(&tr_vec1).is_ok(), true); // All fine
+    assert_eq!(x.add_transition(&tr_vec1).is_ok(), true); // All fine.
     assert_eq!(x.add_transition(&tr_vec2).is_err(), true); // Forced indeterminancy in the first tape.
   }
 }

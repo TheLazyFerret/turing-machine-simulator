@@ -5,9 +5,7 @@
 //!
 //! Transition function module. Representing each Tape function.
 
-pub mod transition;
-
-use self::transition::Transition;
+use crate::turing_machine::transition::Transition;
 use std::collections::HashMap;
 
 /// Struct representing the transition function for a single tape.
@@ -55,10 +53,8 @@ impl TapeFunction {
 
 #[cfg(test)]
 mod tests {
-  use crate::turing_machine::tape_function::{
-    TapeFunction,
-    transition::{Direction, Transition},
-  };
+  use crate::turing_machine::tape_function::TapeFunction;
+  use crate::turing_machine::transition::{Direction, Transition};
 
   #[test]
   fn test_add() {
