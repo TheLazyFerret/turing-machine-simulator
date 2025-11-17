@@ -8,6 +8,8 @@
 use core::fmt;
 use std::ops::{Neg, Sub};
 
+use crate::turing_machine::transition::Direction;
+
 /// Represents a blank in a tape's cell.
 const BLANK: char = '\0';
 /// How the blanks will be printed.
@@ -40,23 +42,15 @@ impl Tape {
     }
   }
 
-  /// Moves the head one cell to right. If the cell is not defined, create a blank one.
-  /// It is only defined to create a new cell if the head is in the positive side.
-  pub fn move_right(&mut self) {
-    self.head += 1;
-    let norm = self.absolute_pos();
-    if self.head >= 0 && self.p_half.get(norm).is_none() {
-      self.p_half.push(BLANK);
-    }
-  }
-
-  /// Moves the head one cell to left. If the cell is not defined, create a blank one.
-  /// It is only defined to create a new cell if the head is in the negative half.
-  pub fn move_left(&mut self) {
-    self.head -= 1;
-    let norm = self.absolute_pos();
-    if self.head < 0 && self.n_half.get(norm).is_none() {
-      self.n_half.push(BLANK);
+  pub fn mov(&mut self, dir: Direction) {
+    match dir {
+      | Direction::Left => {
+        self.move_left();
+      },
+      | Direction::Right => {
+        self.move_right();
+      },
+      | Direction::Stop => {},
     }
   }
 
@@ -114,6 +108,26 @@ impl Tape {
       self.head.cast_unsigned()
     } else {
       self.head.neg().cast_unsigned().sub(1)
+    }
+  }
+
+  /// Moves the head one cell to right. If the cell is not defined, create a blank one.
+  /// It is only defined to create a new cell if the head is in the positive side.
+  fn move_right(&mut self) {
+    self.head += 1;
+    let norm = self.absolute_pos();
+    if self.head >= 0 && self.p_half.get(norm).is_none() {
+      self.p_half.push(BLANK);
+    }
+  }
+
+  /// Moves the head one cell to left. If the cell is not defined, create a blank one.
+  /// It is only defined to create a new cell if the head is in the negative half.
+  fn move_left(&mut self) {
+    self.head -= 1;
+    let norm = self.absolute_pos();
+    if self.head < 0 && self.n_half.get(norm).is_none() {
+      self.n_half.push(BLANK);
     }
   }
 }
