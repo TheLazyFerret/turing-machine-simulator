@@ -8,21 +8,23 @@
 mod tape;
 mod tape_function;
 
-use core::fmt;
+use crate::turing_machine::tape_function::TapeFunction;
 use std::collections::HashSet;
+use std::fmt;
 
 /// Maximum ammount of steps a single run can do before being cancelled.
 const MAX_STEP: usize = 500;
 
 /// Struct representing a deterministic Turing machine.
+/// Inside the struct only will be present the definition of the TuringMachine.
+/// The tapes will be independent of each run.
 #[derive(Clone, Debug)]
 pub struct TuringMachine {
-  /// The number of tapes.
-  tapes_count: usize,
   /// Initial transition.
   initial: usize,
-  /// Transition function.
-  // todo~!
+  /// Transition function. Each element represents a tape function.
+  /// Also saves the number of Tapes.
+  ft: Vec<TapeFunction>,
   /// Set of the final acceptance states.
   acceptance: HashSet<usize>,
 }
@@ -30,8 +32,14 @@ pub struct TuringMachine {
 /// Public implementation.
 impl TuringMachine {
   /// Returns a new, empty TuringMachine Instance.
-  pub fn new() -> Self {
-    TuringMachine::default()
+  pub fn new(ntapes: usize) -> Self {
+    let mut f: Vec<TapeFunction> = Vec::with_capacity(ntapes);
+    f.resize_with(ntapes, || TapeFunction::new());
+    TuringMachine {
+      initial: 0,
+      ft: f,
+      acceptance: HashSet::new(),
+    }
   }
 
   pub fn run(&self, s: &str) -> Result<bool, TuringMachineError> {
@@ -50,12 +58,6 @@ impl TuringMachine {
   /// Auxiliar function, representing each one of the steps of run().
   /// Returns true if it finished, false otherwise.
   fn run_step(&self, state: &mut usize) -> Result<bool, TuringMachineError> {
-    todo!()
-  }
-}
-
-impl Default for TuringMachine {
-  fn default() -> Self {
     todo!()
   }
 }
