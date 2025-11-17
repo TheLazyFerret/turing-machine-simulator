@@ -7,11 +7,8 @@
 
 pub mod transition;
 
-use crate::turing_machine::tape::Tape;
-
 use self::transition::Transition;
-use core::fmt;
-use std::{collections::HashMap, hash::Hash};
+use std::collections::HashMap;
 
 /// Struct representing the transition function for a single tape.
 /// The each element in the Vector represents the current state,
@@ -53,12 +50,6 @@ impl TapeFunction {
     if state >= self.func.len() {
       self.func.resize_with(state + 1, || HashMap::new());
     }
-  }
-}
-
-impl fmt::Display for TapeFunction {
-  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-    todo!()
   }
 }
 
