@@ -12,6 +12,7 @@ use crate::turing_machine::tape::Tape;
 use crate::turing_machine::transition::Transition;
 use std::collections::{HashMap, HashSet};
 use std::fmt;
+use std::thread::current;
 
 /// Represents a blank in a tape's cell.
 const BLANK: char = '\0';
@@ -37,30 +38,69 @@ pub struct TuringMachine {
 
 impl TuringMachine {
   /// Creates a new TuringMachine instance.
-  pub fn new(initial: usize, ntapes: usize, accept: &HashSet<usize>) -> Self {
-    TuringMachine {
-      initial: initial,
-      ntapes: ntapes,
-      function: Vec::new(),
-      acceptance: accept.clone(),
+  pub fn new(
+    initial: usize, ntapes: usize, accept: &HashSet<usize>,
+  ) -> Result<Self, TuringMachineError> {
+    if ntapes == 0 {
+      Err(TuringMachineError::TapesErrorCount)
+    } else {
+      Ok(TuringMachine {
+        initial: initial,
+        ntapes: ntapes,
+        function: Vec::new(),
+        acceptance: accept.clone(),
+      })
     }
   }
 
-  pub fn test(s: &str) -> Result<bool, TuringMachineError> {
-    todo!()
+  pub fn test(&self, s: &str) -> Result<bool, TuringMachineError> {
+    let mut tapes = vec![Tape::new(); self.ntapes];
+    let mut current: usize = self.initial;
+    let mut counter = 0;
+    tapes.get_mut(0).unwrap().load_string(s);
+    while self.step(&mut current, tapes.as_mut_slice()) {
+      if counter >= MAX_STEP {
+        return Err(TuringMachineError::MaxStepsReached);
+      }
+      counter += 1;
+    }
+    Ok(self.acceptance.get(&current).is_some())
   }
 
   /// Auxiliar function, representing each one of the steps of test().
-  /// Returns true if it finished, false otherwise.
-  fn step(&self, state: &mut usize, tapes: &mut Vec<Tape>) -> bool {
-    todo!()
+  /// Returns false if finished, true otherwise.
+  fn step(&self, current: &mut usize, tapes: &mut [Tape]) -> bool {
+    assert!(self.ntapes == tapes.len());
+    let readed = Self::read_tapes(tapes);
+    if let Some(x) = self.function.get(*current) {
+      if let Some(x) = x.get(&readed) {
+        *current = x.next();
+        Self::update_tapes(tapes, x);
+        true
+      } else {
+        false
+      }
+    } else {
+      false
+    }
   }
 
   /// Read the current symbol of each tape, and return them.
-  fn read(tapes: &[Tape]) -> Vec<char> {
+  fn read_tapes(tapes: &[Tape]) -> Vec<char> {
     let mut x = Vec::new();
     tapes.iter().for_each(|tape| x.push(tape.read()));
     x
+  }
+
+  /// Update the tapes
+  fn update_tapes(tapes: &mut [Tape], tr: &Transition) {
+    assert!(tapes.len() == tr.len());
+    for tape in tapes.iter_mut().enumerate() {
+      let char_to_write = tr.write_slice().get(tape.0).unwrap().clone();
+      let direction_to_move = tr.move_slice().get(tape.0).unwrap().clone();
+      tape.1.write(char_to_write);
+      tape.1.mov(direction_to_move);
+    }
   }
 
   /// Add a transition to the Turing machine.
@@ -95,19 +135,24 @@ pub enum TuringMachineError {
   MaxStepsReached,
   /// When adding a transition, the number of tapes doesn't coincide.
   UnmatchingSizes,
+  /// The number of tapes must be 1 or more.
+  TapesErrorCount,
 }
 
 impl fmt::Display for TuringMachineError {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     match self {
       | TuringMachineError::Indeterminancy => {
-        write!(f, "Multiple transitions for the same pair state-readed")
+        write!(f, "Multiple transitions for the same pair state-readed.")
       },
       | TuringMachineError::MaxStepsReached => {
-        write!(f, "Run stopped, reached the maximum ammount of steps")
+        write!(f, "Run stopped, reached the maximum ammount of steps.")
       },
       | TuringMachineError::UnmatchingSizes => {
-        write!(f, "The number of tapes doesn't coincide with the transition")
+        write!(f, "The number of tapes doesn't coincide with the transition.")
+      },
+      | TuringMachineError::TapesErrorCount => {
+        write!(f, "The number of tapes must be 0 or more.")
       },
     }
   }
@@ -132,7 +177,7 @@ mod test {
       3,
     )
     .unwrap();
-    let mut tm = TuringMachine::new(0, 2, &HashSet::from([0, 1, 2]));
+    let mut tm = TuringMachine::new(0, 2, &HashSet::from([0, 1, 2])).unwrap();
     assert_eq!(tm.insert_transition(0, &vec!['a', 'a'], &tr1), Ok(()));
     assert_eq!(tm.insert_transition(10, &vec!['a', 'a'], &tr1), Ok(()));
     assert_eq!(tm.insert_transition(0, &vec!['b', 'a'], &tr1), Ok(()));
@@ -144,5 +189,15 @@ mod test {
       tm.insert_transition(0, &vec!['a', 'b'], &tr2),
       Err(TuringMachineError::UnmatchingSizes)
     );
+  }
+
+  #[test]
+  fn test_test() {
+    let mut tm = TuringMachine::new(0, 1, &HashSet::from([0])).unwrap();
+    let tr0 = Transition::new(&vec!['M'], &vec![Direction::Right], 1).unwrap();
+    let tr1 = Transition::new(&vec!['M'], &vec![Direction::Right], 0).unwrap();
+    tm.insert_transition(0, &vec!['a'], &tr0).expect("Unexpected error found adding transition");
+    tm.insert_transition(1, &vec!['a'], &tr1).expect("Unexpected error found adding transition");
+    assert_eq!(tm.test("aa"), Ok(true));
   }
 }
