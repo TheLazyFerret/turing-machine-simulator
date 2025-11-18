@@ -56,16 +56,22 @@ impl TuringMachine {
     todo!()
   }
 
+  /// Read the current symbol of each tape, and return them.
+  fn read(tapes: &[Tape]) -> Vec<char> {
+    let mut x = Vec::new();
+    tapes.iter().for_each(|tape| x.push(tape.read()));
+    x
+  }
+
   /// Add a transition to the Turing machine.
   /// Due the ammount of Tapes is known compile-time, it will take as parameters an array of
-  fn add_transition(
+  fn insert_transition(
     &mut self, state: usize, read: &[char], tr: &Transition,
   ) -> Result<(), TuringMachineError> {
-    self.resize_func_vec(state);
-    // Check the number of tapes is the same as the number of operations in the transition.
-    if (self.ntapes != tr.oper().len()) || (self.ntapes != read.len()) {
+    if (tr.len() != self.ntapes) || (read.len() != self.ntapes) {
       return Err(TuringMachineError::UnmatchingSizes);
     }
+    self.resize_func_vec(state);
     if let Some(_) = self.function.get_mut(state).unwrap().insert(read.to_owned(), tr.clone()) {
       return Err(TuringMachineError::Indeterminancy);
     }
@@ -81,11 +87,13 @@ impl TuringMachine {
 }
 
 /// Enum for represting the multiple errors with TuringMachine.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum TuringMachineError {
   /// Multiple transitions with same (state, read).
   Indeterminancy,
+  /// Reached the maximum number of allowed steps.
   MaxStepsReached,
+  /// When adding a transition, the number of tapes doesn't coincide.
   UnmatchingSizes,
 }
 
@@ -113,20 +121,20 @@ fn print_sym(x: char) -> char {
 
 #[cfg(test)]
 mod test {
-  use std::collections::HashSet;
+    use std::collections::HashSet;
 
-  use crate::turing_machine::{
-    TuringMachine,
-    transition::{Direction, Transition},
-  };
+    use crate::turing_machine::{TuringMachine, TuringMachineError, transition::{Direction, Transition}};
+
 
   #[test]
   fn test_add_transition() {
-    let trans0 = Transition::new(&vec![('a', Direction::Left), ('b', Direction::Right)], 1);
-    let trans1 = Transition::new(&vec![('b', Direction::Left), ('c', Direction::Left)], 2);
-    let mut tr: TuringMachine = TuringMachine::new(0, 2, &HashSet::from([0, 1, 2]));
-    tr.add_transition(0, &vec!['a', 'a'], &trans0).expect("Error shouldn't have been here");
-    tr.add_transition(15, &vec!['\0', '\0'], &trans1).expect("Error shouldn't have been here");
-    tr.add_transition(0, &vec!['a', 'a'], &trans0).expect_err("Here should have been an error");
+    let tr1 = Transition::new(&vec!['a', 'a'], &vec![Direction::Right, Direction::Left], 1).unwrap();
+    let tr2 = Transition::new(&vec!['a', '\0', '\0'], &vec![Direction::Stop, Direction::Right, Direction::Left], 3).unwrap();
+    let mut tm = TuringMachine::new(0, 2, &HashSet::from([0, 1, 2]));
+    assert_eq!(tm.insert_transition(0, &vec!['a', 'a'], &tr1), Ok(()));
+    assert_eq!(tm.insert_transition(10, &vec!['a', 'a'], &tr1), Ok(()));
+    assert_eq!(tm.insert_transition(0, &vec!['b', 'a'], &tr1), Ok(()));
+    assert_eq!(tm.insert_transition(0, &vec!['b', 'a'], &tr1), Err(TuringMachineError::Indeterminancy));
+    assert_eq!(tm.insert_transition(0, &vec!['a', 'b'], &tr2), Err(TuringMachineError::UnmatchingSizes));
   }
 }
