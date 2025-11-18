@@ -13,6 +13,17 @@ use crate::turing_machine::transition::Transition;
 use std::collections::HashSet;
 use std::fmt;
 
+/// Represents a blank in a tape's cell.
+const BLANK: char = '\0';
+/// How the blanks will be printed.
+const BLANK_REP: char = 'β';
+
+/// Auxiliar function for Display: returns a visual representation of a symbol.
+/// Basically prints β if the symbol is a blank, itself otherwise.
+fn print_sym(x: char) -> char {
+  if x == BLANK { BLANK_REP } else { x }
+}
+
 /// Maximum ammount of steps a single run can do before being cancelled.
 const MAX_STEP: usize = 500;
 

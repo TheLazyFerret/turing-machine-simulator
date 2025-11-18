@@ -8,12 +8,7 @@
 use core::fmt;
 use std::ops::{Neg, Sub};
 
-use crate::turing_machine::transition::Direction;
-
-/// Represents a blank in a tape's cell.
-const BLANK: char = '\0';
-/// How the blanks will be printed.
-const BLANK_REP: char = 'β';
+use crate::turing_machine::{BLANK, print_sym, transition::Direction};
 
 /// Struct representing a Single tape.
 #[derive(Clone, Debug)]
@@ -141,12 +136,6 @@ impl Default for Tape {
       head: 0,
     }
   }
-}
-
-/// Auxiliar function for Display: returns a visual representation of a symbol.
-/// Basically prints β if the symbol is a blank, itself otherwise.
-fn print_sym(x: char) -> char {
-  if x == BLANK { BLANK_REP } else { x }
 }
 
 impl fmt::Display for Tape {
