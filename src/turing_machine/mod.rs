@@ -36,7 +36,6 @@ pub struct TuringMachine {
   initial: usize,
   /// Transition function. Each element represents a tape function.
   /// Also saves the number of Tapes.
-  ///
   /// Set of the final acceptance states.
   acceptance: HashSet<usize>,
 }
