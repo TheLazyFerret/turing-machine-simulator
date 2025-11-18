@@ -10,19 +10,13 @@ mod transition;
 
 use crate::turing_machine::tape::Tape;
 use crate::turing_machine::transition::Transition;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::fmt;
 
 /// Represents a blank in a tape's cell.
 const BLANK: char = '\0';
 /// How the blanks will be printed.
 const BLANK_REP: char = 'β';
-
-/// Auxiliar function for Display: returns a visual representation of a symbol.
-/// Basically prints β if the symbol is a blank, itself otherwise.
-fn print_sym(x: char) -> char {
-  if x == BLANK { BLANK_REP } else { x }
-}
 
 /// Maximum ammount of steps a single run can do before being cancelled.
 const MAX_STEP: usize = 500;
@@ -34,8 +28,8 @@ const MAX_STEP: usize = 500;
 pub struct TuringMachine {
   /// Initial transition.
   initial: usize,
-  /// Transition function. Each element represents a tape function.
-  /// Also saves the number of Tapes.
+  /// Transition function.
+  function: Vec<HashMap<String, Transition>>,
   /// Set of the final acceptance states.
   acceptance: HashSet<usize>,
 }
@@ -58,8 +52,17 @@ impl TuringMachine {
 
   /// Add a transition to the Turing machine.
   /// Due the ammount of Tapes is known compile-time, it will take as parameters an array of
-  fn add_transition(&mut self, trs: &[Transition]) -> Result<(), TuringMachineError> {
+  fn add_transition(
+    &mut self, state: usize, read: &str, tr: &Transition,
+  ) -> Result<(), TuringMachineError> {
     todo!()
+  }
+
+  /// Resize the function Vector.
+  fn resize_func_vec(&mut self, u: usize) {
+    if self.function.len() <= u {
+      self.function.resize_with(u + 1, || HashMap::new());
+    }
   }
 }
 
@@ -69,6 +72,7 @@ pub enum TuringMachineError {
   /// Multiple transitions with same (state, read).
   Indeterminancy,
   MaxStepsReached,
+  UnmatchingSizes,
 }
 
 impl fmt::Display for TuringMachineError {
@@ -80,8 +84,17 @@ impl fmt::Display for TuringMachineError {
       | TuringMachineError::MaxStepsReached => {
         write!(f, "Run stopped, reached the maximum ammount of steps")
       },
+      | TuringMachineError::UnmatchingSizes => {
+        write!(f, "The number of tapes doesn't coincide with the transition")
+      },
     }
   }
+}
+
+/// Auxiliar function for Display: returns a visual representation of a symbol.
+/// Basically prints β if the symbol is a blank, itself otherwise.
+fn print_sym(x: char) -> char {
+  if x == BLANK { BLANK_REP } else { x }
 }
 
 #[cfg(test)]
