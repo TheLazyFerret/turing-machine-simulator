@@ -32,6 +32,14 @@ impl Tape {
     Tape { n_half: Vec::new(), p_half: f.chars().collect(), head: 0 }
   }
 
+  /// Loads a string to the tape and reset the tape.
+  pub fn load_string(&mut self, f: &str) {
+    self.n_half.clear();
+    self.p_half = f.chars().collect();
+    self.head = 0;
+  }
+
+  /// Move the head to the specified direction.
   pub fn mov(&mut self, dir: Direction) {
     match dir {
       | Direction::Left => {
