@@ -53,7 +53,7 @@ impl TuringMachine {
     }
   }
 
-  pub fn test(&self, s: &str) -> Result<bool, TuringMachineError> {
+  pub fn run(&self, s: &str) -> Result<bool, TuringMachineError> {
     let mut tapes = vec![Tape::new(); self.ntapes];
     let mut current: usize = self.initial;
     let mut counter = 0;
@@ -152,7 +152,7 @@ impl fmt::Display for TuringMachineError {
         write!(f, "The number of tapes doesn't coincide with the transition.")
       },
       | TuringMachineError::TapesErrorCount => {
-        write!(f, "The number of tapes must be 0 or more.")
+        write!(f, "The number of tapes must be 1 or more.")
       },
     }
   }
@@ -192,12 +192,12 @@ mod test {
   }
 
   #[test]
-  fn test_test() {
+  fn test_run_singletape() {
     let mut tm = TuringMachine::new(0, 1, &HashSet::from([0])).unwrap();
     let tr0 = Transition::new(&vec!['M'], &vec![Direction::Right], 1).unwrap();
     let tr1 = Transition::new(&vec!['M'], &vec![Direction::Right], 0).unwrap();
     tm.insert_transition(0, &vec!['a'], &tr0).expect("Unexpected error found adding transition");
     tm.insert_transition(1, &vec!['a'], &tr1).expect("Unexpected error found adding transition");
-    assert_eq!(tm.test("aa"), Ok(true));
+    assert_eq!(tm.run(""), Ok(true));
   }
 }
