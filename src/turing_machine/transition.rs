@@ -8,16 +8,21 @@
 /// Each transition of the turing machine.
 #[derive(Clone, Debug)]
 pub struct Transition {
-  // Vector tuple of the write-direction of each Tape.
-  oper: Vec<(char, Direction)>,
+  // Vector of the char to write in each tape.
+  to_write: Vec<char>,
+  // Vector of the Direction to move in each tape.
+  to_move: Vec<Direction>,
   // The next state.
   next: usize,
 }
 
 impl Transition {
   /// Returns a new Transition.
-  pub fn new(op: &[(char, Direction)], n: usize) -> Self {
-    Transition { next: n, oper: op.to_vec() }
+  pub fn new(tw: &[char], tm:&[Direction], n: usize) -> Option<Self> {
+    if tw.len() != tm.len() {
+      return None
+    }
+    Some(Transition { to_write: tw.to_owned(), to_move: tm.to_owned(), next: n })
   }
 
   /// Returns the next state.
@@ -25,9 +30,14 @@ impl Transition {
     self.next
   }
 
-  /// Returns the oper Vec as a slice.
-  pub fn oper(&self) -> &[(char, Direction)] {
-    self.oper.as_slice()
+  /// Returns a slice of the characters to write.
+  pub fn write_slice(&self) -> &[char] {
+    &self.to_write
+  }
+
+  /// Returns a slice of the movements.
+  pub fn move_slice(&self) -> &[Direction] {
+    &self.to_move
   }
 }
 
@@ -45,9 +55,7 @@ mod tests {
 
   #[test]
   fn test_transition() {
-    let opers = vec![('a', Direction::Left), ('b', Direction::Right)];
-    let tr = Transition::new(opers.as_slice(), 2);
-    assert_eq!(tr.next(), 2);
-    assert_eq!(tr.oper(), opers.as_slice());
+    assert!(Transition::new(&vec!['a', 'b'], &vec![Direction::Left, Direction::Right], 2).is_some());
+    assert!(Transition::new(&vec!['a', 'b', 'c'], &vec![Direction::Left, Direction::Right], 2).is_none()); 
   }
 }
