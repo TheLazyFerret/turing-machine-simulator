@@ -24,7 +24,11 @@ pub struct Tape {
 impl Tape {
   /// Returns a new Empty tape.
   pub fn new() -> Self {
-    Tape::default()
+    Tape {
+      n_half: Vec::new(),
+      p_half: Vec::from(&['\0']),
+      head: 0
+    }
   }
 
   /// Loads a string to the tape and reset the tape.
@@ -109,13 +113,6 @@ impl Tape {
     if self.head < 0 && self.n_half.get(norm).is_none() {
       self.n_half.push(BLANK);
     }
-  }
-}
-
-impl Default for Tape {
-  /// Default construction for Tape.
-  fn default() -> Self {
-    Tape { n_half: Vec::new(), p_half: Vec::new(), head: 0 }
   }
 }
 
