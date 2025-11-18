@@ -6,11 +6,9 @@
 //! Turing machine struct module.
 
 mod tape;
-mod tape_function;
 mod transition;
 
 use crate::turing_machine::tape::Tape;
-use crate::turing_machine::tape_function::TapeFunction;
 use crate::turing_machine::transition::Transition;
 use std::collections::HashSet;
 use std::fmt;
@@ -27,7 +25,7 @@ pub struct TuringMachine {
   initial: usize,
   /// Transition function. Each element represents a tape function.
   /// Also saves the number of Tapes.
-  ft: Vec<TapeFunction>,
+  ///
   /// Set of the final acceptance states.
   acceptance: HashSet<usize>,
 }
