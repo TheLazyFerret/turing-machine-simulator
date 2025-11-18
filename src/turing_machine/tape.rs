@@ -27,15 +27,16 @@ impl Tape {
     Tape::default()
   }
 
-  /// Returns a new Tape with a string loaded.
-  pub fn from_string(f: &str) -> Self {
-    Tape { n_half: Vec::new(), p_half: f.chars().collect(), head: 0 }
-  }
-
   /// Loads a string to the tape and reset the tape.
   pub fn load_string(&mut self, f: &str) {
     self.n_half.clear();
-    self.p_half = f.chars().collect();
+    // The tape must have atleast one cell defined to work.
+    if f.is_empty() {
+      self.p_half = "\0".chars().collect();
+    }
+    else {
+      self.p_half = f.chars().collect();
+    }
     self.head = 0;
   }
 
@@ -157,14 +158,16 @@ mod tests {
 
   #[test]
   fn test_from_string() {
-    let x = Tape::from_string("perro");
+    let mut x = Tape::new();
+    x.load_string("perro");
     assert_eq!(*x.p_half.as_slice().first().unwrap(), 'p');
     assert_eq!(*x.p_half.as_slice().last().unwrap(), 'o');
   }
 
   #[test]
   fn test_write_read_head() {
-    let mut x = Tape::from_string("perro");
+    let mut x = Tape::new();
+    x.load_string("perro");
     x.head = 1;
     x.write('@');
     assert_eq!(x.read(), '@');
@@ -183,7 +186,8 @@ mod tests {
 
   #[test]
   fn test_move() {
-    let mut x = Tape::from_string("p");
+    let mut x = Tape::new();
+    x.load_string("p");
     x.move_left();
     assert_eq!(x.read(), BLANK);
     x.move_right();
@@ -194,7 +198,8 @@ mod tests {
 
   #[test]
   fn test_display() {
-    let mut x = Tape::from_string("p");
+    let mut x = Tape::new();
+    x.load_string("p");
     x.move_left();
     x.move_right();
     x.move_right();
