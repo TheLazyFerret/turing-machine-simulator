@@ -7,26 +7,37 @@
 
 use std::fmt::Display;
 
+
 /// Each transition of the turing machine.
 #[derive(Clone, Debug)]
 pub struct Transition {
-  /// The node it comes from.
+  /// The state it comes from.
   from: usize,
   /// Transition info for each of the tapes.
   info: Vec<(char, char, Direction)>,
-  /// The node it go.
+  /// The state it goes.
   next: usize,
 }
 
 /// Public implementation.
 impl Transition {
   /// Creates a new Transition.
-  pub fn new(fr: usize, nx: usize) -> Self {
+  pub fn new(fr: usize, nx: usize, infv: &[(char, char, Direction)]) -> Self {
     Transition {
       from: fr,
-      info: Vec::new(),
+      info: infv.to_vec(),
       next: nx,
     }
+  }
+
+  /// Return a tuple of the from and next nodes. 
+  pub fn state(&self) -> (usize, usize) {
+    (self.from, self.next)
+  }
+
+  /// Returns the info of each Tape.
+  pub fn info(&self) -> &[(char, char, Direction)] {
+    self.info.as_slice()
   }
 }
 
@@ -50,4 +61,22 @@ impl Display for Direction {
 }
 
 #[cfg(test)]
-mod tests {}
+mod tests {
+    use crate::turing_machine::transition::{Direction, Transition};
+
+
+  #[test]
+  fn test_new() {
+    let vinf = vec![('a', 'a', Direction::Left), ('\0', '\0', Direction::Right)];
+    Transition::new(0, 1, &vinf);
+  }
+
+  #[test]
+  fn test_getters() {
+    let vinf = vec![('a', 'a', Direction::Left), ('\0', '\0', Direction::Right)];
+    let tr = Transition::new(0, 1, &vinf); 
+    assert_eq!(tr.state(), (0, 1));
+    assert_eq!(tr.info(), vinf.as_slice());
+  }
+
+}
