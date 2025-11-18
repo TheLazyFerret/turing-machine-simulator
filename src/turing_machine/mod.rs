@@ -113,28 +113,36 @@ impl fmt::Display for TuringMachineError {
   }
 }
 
-/// Auxiliar function for Display: returns a visual representation of a symbol.
-/// Basically prints β if the symbol is a blank, itself otherwise.
-fn print_sym(x: char) -> char {
-  if x == BLANK { BLANK_REP } else { x }
-}
-
 #[cfg(test)]
 mod test {
-    use std::collections::HashSet;
+  use std::collections::HashSet;
 
-    use crate::turing_machine::{TuringMachine, TuringMachineError, transition::{Direction, Transition}};
-
+  use crate::turing_machine::{
+    TuringMachine, TuringMachineError,
+    transition::{Direction, Transition},
+  };
 
   #[test]
   fn test_add_transition() {
-    let tr1 = Transition::new(&vec!['a', 'a'], &vec![Direction::Right, Direction::Left], 1).unwrap();
-    let tr2 = Transition::new(&vec!['a', '\0', '\0'], &vec![Direction::Stop, Direction::Right, Direction::Left], 3).unwrap();
+    let tr1 =
+      Transition::new(&vec!['a', 'a'], &vec![Direction::Right, Direction::Left], 1).unwrap();
+    let tr2 = Transition::new(
+      &vec!['a', '\0', '\0'],
+      &vec![Direction::Stop, Direction::Right, Direction::Left],
+      3,
+    )
+    .unwrap();
     let mut tm = TuringMachine::new(0, 2, &HashSet::from([0, 1, 2]));
     assert_eq!(tm.insert_transition(0, &vec!['a', 'a'], &tr1), Ok(()));
     assert_eq!(tm.insert_transition(10, &vec!['a', 'a'], &tr1), Ok(()));
     assert_eq!(tm.insert_transition(0, &vec!['b', 'a'], &tr1), Ok(()));
-    assert_eq!(tm.insert_transition(0, &vec!['b', 'a'], &tr1), Err(TuringMachineError::Indeterminancy));
-    assert_eq!(tm.insert_transition(0, &vec!['a', 'b'], &tr2), Err(TuringMachineError::UnmatchingSizes));
+    assert_eq!(
+      tm.insert_transition(0, &vec!['b', 'a'], &tr1),
+      Err(TuringMachineError::Indeterminancy)
+    );
+    assert_eq!(
+      tm.insert_transition(0, &vec!['a', 'b'], &tr2),
+      Err(TuringMachineError::UnmatchingSizes)
+    );
   }
 }
