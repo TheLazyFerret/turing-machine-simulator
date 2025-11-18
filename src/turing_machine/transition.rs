@@ -14,7 +14,6 @@ pub struct Transition {
   next: usize,
 }
 
-/// Public implementation.
 impl Transition {
   /// Returns a new Transition.
   pub fn new(op: &[(char, Direction)], n: usize) -> Self {

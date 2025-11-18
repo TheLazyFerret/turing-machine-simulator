@@ -21,7 +21,6 @@ pub struct Tape {
   head: isize,
 }
 
-/// Public implementation for Tape struct.
 impl Tape {
   /// Returns a new Empty tape.
   pub fn new() -> Self {
@@ -68,10 +67,7 @@ impl Tape {
   pub fn size(&self) -> usize {
     self.n_half.len() + self.p_half.len()
   }
-}
 
-/// Private implementation for Tape struct.
-impl Tape {
   /// Clean the current state of the object.
   fn clean(&mut self) {
     self.n_half.clear();
