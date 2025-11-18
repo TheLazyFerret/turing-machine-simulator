@@ -17,12 +17,13 @@ pub struct Transition {
 }
 
 impl Transition {
-  /// Returns a new Transition.
-  pub fn new(tw: &[char], tm:&[Direction], n: usize) -> Option<Self> {
+  /// Returns a new Transitition.
+  /// If the size of tw and tm doesn't match, returns None.
+  pub fn new(tw: &[char], tm: &[Direction], n: usize) -> Result<Self, ()> {
     if tw.len() != tm.len() {
-      return None
+      return Err(());
     }
-    Some(Transition { to_write: tw.to_owned(), to_move: tm.to_owned(), next: n })
+    Ok(Transition { to_write: tw.to_owned(), to_move: tm.to_owned(), next: n })
   }
 
   /// Returns the next state.
@@ -38,6 +39,11 @@ impl Transition {
   /// Returns a slice of the movements.
   pub fn move_slice(&self) -> &[Direction] {
     &self.to_move
+  }
+
+  /// Returns the number of tapes this transition represents.
+  pub fn len(&self) -> usize {
+    self.to_move.len()
   }
 }
 
@@ -55,7 +61,9 @@ mod tests {
 
   #[test]
   fn test_transition() {
-    assert!(Transition::new(&vec!['a', 'b'], &vec![Direction::Left, Direction::Right], 2).is_some());
-    assert!(Transition::new(&vec!['a', 'b', 'c'], &vec![Direction::Left, Direction::Right], 2).is_none()); 
+    assert!(Transition::new(&vec!['a', 'b'], &vec![Direction::Left, Direction::Right], 2).is_ok());
+    assert!(
+      Transition::new(&vec!['a', 'b', 'c'], &vec![Direction::Left, Direction::Right], 2).is_err()
+    );
   }
 }
