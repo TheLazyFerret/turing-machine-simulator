@@ -12,7 +12,6 @@ use crate::turing_machine::tape::Tape;
 use crate::turing_machine::transition::Transition;
 use std::collections::{HashMap, HashSet};
 use std::fmt;
-use std::thread::current;
 
 /// Represents a blank in a tape's cell.
 const BLANK: char = '\0';
