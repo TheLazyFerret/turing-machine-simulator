@@ -2,10 +2,8 @@
 edition = "2024"
 # Set the max width for each line.
 max_width = 100
-# Set the max width for functions calls.
-fn_call_width = 100
-# Set the max width for chains (multiple method calls).
-chain_width = 100
+# Set the max width many things.
+use_small_heuristics = "Max"
 # Split the args horizontally.
 fn_params_layout = "Compressed"
 # Set the number of spaces per tab.

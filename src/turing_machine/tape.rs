@@ -30,11 +30,7 @@ impl Tape {
 
   /// Returns a new Tape with a string loaded.
   pub fn from_string(f: &str) -> Self {
-    Tape {
-      n_half: Vec::new(),
-      p_half: f.chars().collect(),
-      head: 0,
-    }
+    Tape { n_half: Vec::new(), p_half: f.chars().collect(), head: 0 }
   }
 
   pub fn mov(&mut self, dir: Direction) {
@@ -52,15 +48,9 @@ impl Tape {
   /// Returns the value in the head position.
   pub fn read(&self) -> char {
     if self.head >= 0 {
-      *self
-        .p_half
-        .get(self.absolute_pos())
-        .expect("weird error accesing for read")
+      *self.p_half.get(self.absolute_pos()).expect("weird error accesing for read")
     } else {
-      *self
-        .n_half
-        .get(self.absolute_pos())
-        .expect("weird error accesing for read")
+      *self.n_half.get(self.absolute_pos()).expect("weird error accesing for read")
     }
   }
 
@@ -68,15 +58,9 @@ impl Tape {
   pub fn write(&mut self, f: char) {
     let pos = self.absolute_pos();
     if self.head >= 0 {
-      *self
-        .p_half
-        .get_mut(pos)
-        .expect("weird error accesing for write") = f;
+      *self.p_half.get_mut(pos).expect("weird error accesing for write") = f;
     } else {
-      *self
-        .p_half
-        .get_mut(pos)
-        .expect("weird error accesing for write") = f;
+      *self.p_half.get_mut(pos).expect("weird error accesing for write") = f;
     }
   }
 
@@ -99,11 +83,7 @@ impl Tape {
   ///  - head >= 0 returns head
   ///  - head < 0 returns head - 1
   fn absolute_pos(&self) -> usize {
-    if self.head >= 0 {
-      self.head.cast_unsigned()
-    } else {
-      self.head.neg().cast_unsigned().sub(1)
-    }
+    if self.head >= 0 { self.head.cast_unsigned() } else { self.head.neg().cast_unsigned().sub(1) }
   }
 
   /// Moves the head one cell to right. If the cell is not defined, create a blank one.
@@ -130,11 +110,7 @@ impl Tape {
 impl Default for Tape {
   /// Default construction for Tape.
   fn default() -> Self {
-    Tape {
-      n_half: Vec::new(),
-      p_half: Vec::new(),
-      head: 0,
-    }
+    Tape { n_half: Vec::new(), p_half: Vec::new(), head: 0 }
   }
 }
 

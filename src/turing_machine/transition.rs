@@ -18,10 +18,7 @@ pub struct Transition {
 impl Transition {
   /// Returns a new Transition.
   pub fn new(op: &[(char, Direction)], n: usize) -> Self {
-    Transition {
-      next: n,
-      oper: op.to_vec(),
-    }
+    Transition { next: n, oper: op.to_vec() }
   }
 
   /// Returns the next state.

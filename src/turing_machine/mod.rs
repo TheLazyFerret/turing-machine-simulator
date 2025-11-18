@@ -55,6 +55,10 @@ impl TuringMachine {
   fn add_transition(
     &mut self, state: usize, read: &str, tr: &Transition,
   ) -> Result<(), TuringMachineError> {
+    self.resize_func_vec(state);
+    if let Some(_) = self.function.get_mut(state).unwrap().insert(read.to_owned(), tr.clone()) {
+      return Err(TuringMachineError::Indeterminancy);
+    }
     todo!()
   }
 
