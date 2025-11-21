@@ -5,6 +5,8 @@
 //!
 //! Single transition struct module.
 
+use crate::error::Error;
+
 /// Each transition of the turing machine.
 #[derive(Clone, Debug)]
 pub struct Transition {
@@ -19,9 +21,9 @@ pub struct Transition {
 impl Transition {
   /// Returns a new Transitition.
   /// If the size of tw and tm doesn't match, returns None.
-  pub fn new(tw: &[char], tm: &[Direction], n: usize) -> Result<Self, ()> {
+  pub fn new(tw: &[char], tm: &[Direction], n: usize) -> Result<Self, Error> {
     if tw.len() != tm.len() {
-      return Err(());
+      return Err(Error::TransitionSizeUnmatch);
     }
     Ok(Transition { to_write: tw.to_owned(), to_move: tm.to_owned(), next: n })
   }

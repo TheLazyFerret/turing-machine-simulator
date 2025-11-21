@@ -59,14 +59,11 @@ pub fn parse(rtm: &RawTuringMachine) -> Result<TuringMachine, Error> {
       .collect();
     // Direction of each tape.
     let direc = map_direction_vec(&tr.direction)?;
-    if let Ok(x) = Transition::new(&write, &direc, tr.next) {
-      // Create and insert a new transition.
-      tm.insert_transition(tr.from, &read, &x)?;
-    } else {
-      return Err(Error::TransitionSizeUnmatch);
-    }
+    // Create and insert the new transition.
+    let transition = Transition::new(&write, &direc, tr.next)?;
+    tm.insert_transition(tr.from, &read, &transition)?;
   }
-  return Ok(tm);
+  Ok(tm) // Return the TuringMachine.
 }
 
 /// From a String, convert into a Direction.
