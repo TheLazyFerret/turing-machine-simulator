@@ -103,9 +103,8 @@ impl TuringMachine {
   ) -> Result<(), Error> {
     if tr.len() != self.ntapes {
       return Err(Error::UnmatchingSizes(self.ntapes, tr.len()));
-    }
-    else if read.len() != self.ntapes {
-      return Err(Error::UnmatchingSizes(self.ntapes, read.len()))
+    } else if read.len() != self.ntapes {
+      return Err(Error::UnmatchingSizes(self.ntapes, read.len()));
     }
     self.resize_func_vec(state);
     if let Some(_) = self.function.get_mut(state).unwrap().insert(read.to_owned(), tr.clone()) {

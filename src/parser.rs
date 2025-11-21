@@ -13,6 +13,7 @@ pub const BLANK_REP: char = 'β';
 use crate::error::Error;
 use crate::turing_machine::TuringMachine;
 use crate::turing_machine::transition::{Direction, Transition};
+use clap::Parser;
 use serde::Deserialize;
 use std::collections::HashSet;
 
@@ -70,9 +71,12 @@ pub fn parse(rtm: &RawTuringMachine) -> Result<TuringMachine, Error> {
 fn convert_direction(d: &str) -> Result<Direction, Error> {
   match d {
     | "Left" => Ok(Direction::Left),
+    | "L" => Ok(Direction::Left),
     | "Right" => Ok(Direction::Right),
+    | "R" => Ok(Direction::Right),
     | "Stop" => Ok(Direction::Stop),
-    | _ => Err(Error::UnkownDirection),
+    | "S" => Ok(Direction::Stop),
+    | _ => Err(Error::UnkownDirection(d.to_owned())),
   }
 }
 
@@ -84,4 +88,20 @@ fn map_direction_vec(dir: &[String]) -> Result<Vec<Direction>, Error> {
     vec.push(direction);
   }
   Ok(vec)
+}
+
+#[derive(Parser, Debug, Default)]
+#[command(version, about)]
+pub struct Args {
+  /// String to be tested on the Turing machine.
+  pub string: String,
+  /// Path where the Turing machine configuration is located.
+  #[arg(short, long)]
+  pub turing_path: String,
+  // /// Path where the tape steps will be saved.
+  //#[arg(short, long)]
+  //pub dump: Option<String>,
+  // /// Shell mode (no output, only returns 0 if accept or 1 otherwise)
+  #[arg(short, long, action = clap::ArgAction::Count)]
+  pub shell: u8,
 }

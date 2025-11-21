@@ -1,6 +1,6 @@
 [package]
-name = "turing-machine-rs"
-description = "Turing machine implementation."
+name = "turing-machine-simulator"
+description = "Multitape and deterministic Turing machine CLI simulator."
 
 readme = "README.md"
 license = "MIT"
@@ -14,3 +14,4 @@ edition = "2024"
 toml = "0.9.8"
 regex = "1.12.2"
 serde = { version = "1.0.228", features = ["derive"] }
+clap = { version = "4.5.53", features = [ "derive" ]}

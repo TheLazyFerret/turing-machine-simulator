@@ -1,1 +1,1 @@
-# Turing machine rs
+# Turing machine simulator

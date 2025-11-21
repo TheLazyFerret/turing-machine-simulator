@@ -15,17 +15,19 @@ pub enum Error {
   /// Reached the maximum number of allowed steps.
   MaxStepsReached,
   /// When adding a transition, the number of tapes doesn't coincide.
-  UnmatchingSizes (usize, usize),
+  UnmatchingSizes(usize, usize),
   /// The number of tapes must be 1 or more.
   TapeErrorCount,
   /// The vector inside the transitions doesn´t match
-  TransitionSizeUnmatch (usize, usize),
+  TransitionSizeUnmatch(usize, usize),
   /// Unkown direction.
-  UnkownDirection (String),
+  UnkownDirection(String),
   /// Error parsing the toml file.
-  ErrorParsing (String),
+  ErrorParsing(String),
   /// Error opening the toml file.
-  ErrorOpenFile (String),
+  ErrorOpenFile(String),
+  /// Fail the test (used with shell flag)
+  Fail(String),
 }
 
 impl fmt::Display for Error {
@@ -54,7 +56,10 @@ impl fmt::Display for Error {
       },
       | Error::ErrorOpenFile(x) => {
         write!(f, "Couldn't open the toml file: {x}")
-      }
+      },
+      | Error::Fail(x) => {
+        write!(f, "Failed the test: {x}")
+      },
     }
   }
 }
