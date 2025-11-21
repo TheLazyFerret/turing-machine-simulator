@@ -8,4 +8,7 @@
 #[allow(dead_code)]
 mod turing_machine;
 
+#[allow(dead_code)]
+mod parser;
+
 fn main() {}
