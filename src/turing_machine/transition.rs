@@ -23,7 +23,7 @@ impl Transition {
   /// If the size of tw and tm doesn't match, returns None.
   pub fn new(tw: &[char], tm: &[Direction], n: usize) -> Result<Self, Error> {
     if tw.len() != tm.len() {
-      return Err(Error::TransitionSizeUnmatch);
+      return Err(Error::TransitionSizeUnmatch(tw.len(), tm.len()));
     }
     Ok(Transition { to_write: tw.to_owned(), to_move: tm.to_owned(), next: n })
   }

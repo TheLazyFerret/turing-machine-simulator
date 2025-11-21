@@ -8,22 +8,24 @@
 use core::fmt;
 
 /// Enum representing the possible rutime errors.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Error {
   /// Multiple transitions with same (state, read).
   Indeterminancy,
   /// Reached the maximum number of allowed steps.
   MaxStepsReached,
   /// When adding a transition, the number of tapes doesn't coincide.
-  UnmatchingSizes,
+  UnmatchingSizes (usize, usize),
   /// The number of tapes must be 1 or more.
   TapeErrorCount,
   /// The vector inside the transitions doesn´t match
-  TransitionSizeUnmatch,
+  TransitionSizeUnmatch (usize, usize),
   /// Unkown direction.
-  UnkownDirection,
+  UnkownDirection (String),
   /// Error parsing the toml file.
-  ErrorParsing,
+  ErrorParsing (String),
+  /// Error opening the toml file.
+  ErrorOpenFile (String),
 }
 
 impl fmt::Display for Error {
@@ -35,21 +37,24 @@ impl fmt::Display for Error {
       | Error::MaxStepsReached => {
         write!(f, "Run stopped, reached the maximum ammount of steps.")
       },
-      | Error::UnmatchingSizes => {
-        write!(f, "The number of tapes doesn't coincide with the transition.")
+      | Error::UnmatchingSizes(x, y) => {
+        write!(f, "The number of tapes doesn't coincide with the transition ({x}, {y}).")
       },
       | Error::TapeErrorCount => {
-        write!(f, "The number of tapes must be altelast one.")
+        write!(f, "The number of tapes must be atleast one.")
       },
-      | Error::TransitionSizeUnmatch => {
-        write!(f, "The vec direction and write size doesn't match.")
+      | Error::TransitionSizeUnmatch(x, y) => {
+        write!(f, "The direction and write vectors size doesn't match ({x}, {y}).")
       },
-      | Error::UnkownDirection => {
-        write!(f, "Found an unkown direction while parsing.")
+      | Error::UnkownDirection(x) => {
+        write!(f, "Found an unkown direction while parsing: {x}.")
       },
-      | Error::ErrorParsing => {
-        write!(f, "Found an error parsing the toml file.")
+      | Error::ErrorParsing(x) => {
+        write!(f, "Found an error parsing the toml file: {x}")
       },
+      | Error::ErrorOpenFile(x) => {
+        write!(f, "Couldn't open the toml file: {x}")
+      }
     }
   }
 }

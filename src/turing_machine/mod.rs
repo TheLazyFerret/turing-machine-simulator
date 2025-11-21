@@ -101,8 +101,11 @@ impl TuringMachine {
   pub fn insert_transition(
     &mut self, state: usize, read: &[char], tr: &Transition,
   ) -> Result<(), Error> {
-    if (tr.len() != self.ntapes) || (read.len() != self.ntapes) {
-      return Err(Error::UnmatchingSizes);
+    if tr.len() != self.ntapes {
+      return Err(Error::UnmatchingSizes(self.ntapes, tr.len()));
+    }
+    else if read.len() != self.ntapes {
+      return Err(Error::UnmatchingSizes(self.ntapes, read.len()))
     }
     self.resize_func_vec(state);
     if let Some(_) = self.function.get_mut(state).unwrap().insert(read.to_owned(), tr.clone()) {
@@ -143,7 +146,7 @@ mod test {
     assert_eq!(tm.insert_transition(10, &vec!['a', 'a'], &tr1), Ok(()));
     assert_eq!(tm.insert_transition(0, &vec!['b', 'a'], &tr1), Ok(()));
     assert_eq!(tm.insert_transition(0, &vec!['b', 'a'], &tr1), Err(Error::Indeterminancy));
-    assert_eq!(tm.insert_transition(0, &vec!['a', 'b'], &tr2), Err(Error::UnmatchingSizes));
+    assert_eq!(tm.insert_transition(0, &vec!['a', 'b'], &tr2), Err(Error::UnmatchingSizes(2, 3)));
   }
 
   #[test]
