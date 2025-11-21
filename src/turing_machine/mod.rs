@@ -6,7 +6,7 @@
 //! Turing machine struct module.
 
 mod tape;
-mod transition;
+pub mod transition;
 
 use crate::turing_machine::tape::Tape;
 use crate::turing_machine::transition::Transition;
@@ -41,7 +41,7 @@ impl TuringMachine {
     initial: usize, ntapes: usize, accept: &HashSet<usize>,
   ) -> Result<Self, TuringMachineError> {
     if ntapes == 0 {
-      Err(TuringMachineError::TapesErrorCount)
+      Err(TuringMachineError::TapeErrorCount)
     } else {
       Ok(TuringMachine {
         initial: initial,
@@ -135,7 +135,7 @@ pub enum TuringMachineError {
   /// When adding a transition, the number of tapes doesn't coincide.
   UnmatchingSizes,
   /// The number of tapes must be 1 or more.
-  TapesErrorCount,
+  TapeErrorCount,
 }
 
 impl fmt::Display for TuringMachineError {
@@ -150,7 +150,7 @@ impl fmt::Display for TuringMachineError {
       | TuringMachineError::UnmatchingSizes => {
         write!(f, "The number of tapes doesn't coincide with the transition.")
       },
-      | TuringMachineError::TapesErrorCount => {
+      | TuringMachineError::TapeErrorCount => {
         write!(f, "The number of tapes must be 1 or more.")
       },
     }
