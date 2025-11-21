@@ -17,8 +17,11 @@ fn main() -> Result<(), TuringMachineError> {
   let mut file = fs::File::open("example.toml").unwrap();
   let mut file_str = String::new();
   file.read_to_string(&mut file_str).unwrap();
-  let rtm = parser::parse_toml(&file_str).unwrap();
-  let tm = parser::parse(&rtm)?;
+  let rtm = parser::parse_toml(&file_str);
+  if rtm.is_err() {
+    return Err(TuringMachineError::ErrorParsing);
+  }
+  let tm = parser::parse(&rtm.unwrap())?;
   let test_string = "aa";
   if let Ok(x) = tm.run(test_string) {
     println!("\"{test_string}\" -> {x}");

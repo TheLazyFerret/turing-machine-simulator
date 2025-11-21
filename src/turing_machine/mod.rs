@@ -14,9 +14,9 @@ use std::collections::{HashMap, HashSet};
 use std::fmt;
 
 /// Represents a blank in a tape's cell.
-const BLANK: char = '\0';
+pub const BLANK: char = '\0';
 /// How the blanks will be printed.
-const BLANK_REP: char = 'β';
+pub const BLANK_REP: char = 'β';
 /// Maximum ammount of steps a single run can do before being cancelled.
 const MAX_STEP: usize = 500;
 
@@ -140,6 +140,8 @@ pub enum TuringMachineError {
   TransitionSizeUnmatch,
   /// Unkown direction
   UnkownDirection,
+  /// Error parsing the toml file.
+  ErrorParsing,
 }
 
 impl fmt::Display for TuringMachineError {
@@ -163,6 +165,9 @@ impl fmt::Display for TuringMachineError {
       | TuringMachineError::UnkownDirection => {
         write!(f, "Found an unkown direction")
       },
+      | TuringMachineError::ErrorParsing => {
+        write!(f, "Error parsing the toml file")
+      }
     }
   }
 }
