@@ -6,11 +6,12 @@
 //! Main module for the parser.
 
 use crate::turing_machine::{
-  BLANK, BLANK_REP, TuringMachine, TuringMachineError,
+  BLANK, BLANK_REP, TuringMachine,
   transition::{Direction, Transition},
 };
 use serde::Deserialize;
 use std::collections::HashSet;
+use crate::error::Error;
 
 /// Struct representing an raw, not checked turing machine.
 #[derive(Debug, Default, Clone, Deserialize)]
@@ -38,7 +39,7 @@ pub fn parse_toml(raw: &str) -> Result<RawTuringMachine, Box<dyn std::error::Err
 }
 
 /// Parse a TuringMachine from a RawTuringMachine
-pub fn parse(rtm: &RawTuringMachine) -> Result<TuringMachine, TuringMachineError> {
+pub fn parse(rtm: &RawTuringMachine) -> Result<TuringMachine, Error> {
   let accept_set = HashSet::from_iter(rtm.accept.iter().cloned());
   let mut tm = TuringMachine::new(rtm.initial, rtm.ntapes, &accept_set)?;
   // For each transition.
@@ -52,24 +53,24 @@ pub fn parse(rtm: &RawTuringMachine) -> Result<TuringMachine, TuringMachineError
       // Create and insert a new transition.
       tm.insert_transition(tr.from, &read, &x)?;
     } else {
-      return Err(TuringMachineError::TransitionSizeUnmatch);
+      return Err(Error::TransitionSizeUnmatch);
     }
   }
   return Ok(tm);
 }
 
 /// From a String, convert into a Direction.
-fn convert_direction(d: &str) -> Result<Direction, TuringMachineError> {
+fn convert_direction(d: &str) -> Result<Direction, Error> {
   match d {
     | "Left" => Ok(Direction::Left),
     | "Right" => Ok(Direction::Right),
     | "Stop" => Ok(Direction::Stop),
-    | _ => Err(TuringMachineError::UnkownDirection),
+    | _ => Err(Error::UnkownDirection),
   }
 }
 
 /// From a Vector of string, convert into a Vector of Direction.
-fn map_direction_vec(dir: &[String]) -> Result<Vec<Direction>, TuringMachineError> {
+fn map_direction_vec(dir: &[String]) -> Result<Vec<Direction>, Error> {
   let mut vec = Vec::new();
   for d in dir {
     let direction = convert_direction(d)?;

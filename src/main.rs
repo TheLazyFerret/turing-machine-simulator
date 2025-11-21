@@ -6,20 +6,19 @@
 //! Main file of the crate.
 
 mod turing_machine;
-
 mod parser;
+mod error;
 
 use std::{fs, io::Read};
+use crate::error::Error;
 
-use crate::turing_machine::TuringMachineError;
-
-fn main() -> Result<(), TuringMachineError> {
+fn main() -> Result<(), Error> {
   let mut file = fs::File::open("example.toml").unwrap();
   let mut file_str = String::new();
   file.read_to_string(&mut file_str).unwrap();
   let rtm = parser::parse_toml(&file_str);
   if rtm.is_err() {
-    return Err(TuringMachineError::ErrorParsing);
+    return Err(Error::ErrorParsing);
   }
   let tm = parser::parse(&rtm.unwrap())?;
   let test_string = "aa";
