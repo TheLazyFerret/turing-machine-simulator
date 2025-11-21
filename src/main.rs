@@ -5,14 +5,15 @@
 //!
 //! Main file of the crate.
 
-mod turing_machine;
-mod parser;
 mod error;
+mod parser;
+mod turing_machine;
 
-use std::{fs, io::Read};
 use crate::error::Error;
+use std::{fs, io::Read};
 
 fn main() -> Result<(), Error> {
+  // Parsing phase.
   let mut file = fs::File::open("example.toml").unwrap();
   let mut file_str = String::new();
   file.read_to_string(&mut file_str).unwrap();
@@ -21,6 +22,7 @@ fn main() -> Result<(), Error> {
     return Err(Error::ErrorParsing);
   }
   let tm = parser::parse(&rtm.unwrap())?;
+  // Run phase.
   let test_string = "aa";
   if let Ok(x) = tm.run(test_string) {
     println!("\"{test_string}\" -> {x}");

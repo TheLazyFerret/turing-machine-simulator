@@ -8,7 +8,8 @@
 use core::fmt;
 use std::ops::{Neg, Sub};
 
-use crate::turing_machine::{BLANK, BLANK_REP, transition::Direction};
+use crate::parser::{BLANK, BLANK_REP};
+use crate::turing_machine::transition::Direction;
 
 /// Struct representing a Single tape.
 #[derive(Clone, Debug)]

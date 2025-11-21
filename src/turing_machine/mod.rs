@@ -8,15 +8,11 @@
 mod tape;
 pub mod transition;
 
+use crate::error::Error;
 use crate::turing_machine::tape::Tape;
 use crate::turing_machine::transition::Transition;
 use std::collections::{HashMap, HashSet};
-use crate::error::Error;
 
-/// Represents a blank in a tape's cell.
-pub const BLANK: char = '\0';
-/// How the blanks will be printed.
-pub const BLANK_REP: char = 'β';
 /// Maximum ammount of steps a single run can do before being cancelled.
 const MAX_STEP: usize = 500;
 
@@ -37,9 +33,7 @@ pub struct TuringMachine {
 
 impl TuringMachine {
   /// Creates a new TuringMachine instance.
-  pub fn new(
-    initial: usize, ntapes: usize, accept: &HashSet<usize>,
-  ) -> Result<Self, Error> {
+  pub fn new(initial: usize, ntapes: usize, accept: &HashSet<usize>) -> Result<Self, Error> {
     if ntapes == 0 {
       Err(Error::TapeErrorCount)
     } else {
@@ -130,7 +124,7 @@ mod test {
   use std::collections::HashSet;
 
   use crate::turing_machine::{
-    TuringMachine, Error,
+    Error, TuringMachine,
     transition::{Direction, Transition},
   };
 
@@ -148,14 +142,8 @@ mod test {
     assert_eq!(tm.insert_transition(0, &vec!['a', 'a'], &tr1), Ok(()));
     assert_eq!(tm.insert_transition(10, &vec!['a', 'a'], &tr1), Ok(()));
     assert_eq!(tm.insert_transition(0, &vec!['b', 'a'], &tr1), Ok(()));
-    assert_eq!(
-      tm.insert_transition(0, &vec!['b', 'a'], &tr1),
-      Err(Error::Indeterminancy)
-    );
-    assert_eq!(
-      tm.insert_transition(0, &vec!['a', 'b'], &tr2),
-      Err(Error::UnmatchingSizes)
-    );
+    assert_eq!(tm.insert_transition(0, &vec!['b', 'a'], &tr1), Err(Error::Indeterminancy));
+    assert_eq!(tm.insert_transition(0, &vec!['a', 'b'], &tr2), Err(Error::UnmatchingSizes));
   }
 
   #[test]

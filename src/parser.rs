@@ -5,13 +5,16 @@
 //!
 //! Main module for the parser.
 
-use crate::turing_machine::{
-  BLANK, BLANK_REP, TuringMachine,
-  transition::{Direction, Transition},
-};
+/// Represents a blank in a tape's cell.
+pub const BLANK: char = '\0';
+/// How the blanks will be printed.
+pub const BLANK_REP: char = 'β';
+
+use crate::error::Error;
+use crate::turing_machine::TuringMachine;
+use crate::turing_machine::transition::{Direction, Transition};
 use serde::Deserialize;
 use std::collections::HashSet;
-use crate::error::Error;
 
 /// Struct representing an raw, not checked turing machine.
 #[derive(Debug, Default, Clone, Deserialize)]
@@ -44,11 +47,18 @@ pub fn parse(rtm: &RawTuringMachine) -> Result<TuringMachine, Error> {
   let mut tm = TuringMachine::new(rtm.initial, rtm.ntapes, &accept_set)?;
   // For each transition.
   for tr in &rtm.transition {
-    let mut read = Vec::from_iter(tr.read.chars()); // Characters readed.
-    read = read.iter().map(|x| if *x == BLANK_REP { BLANK } else { *x }).collect(); // change the blank representation for blanks
-    let mut write = Vec::from_iter(tr.write.chars()); // Characters writen.
-    write = write.iter().map(|x| if *x == BLANK_REP { BLANK } else { *x }).collect(); // change the blank representation for blanks
-    let direc = map_direction_vec(&tr.direction)?; // Direction of each tape.
+    // Characters readed.
+    let read: Vec<char> = Vec::from_iter(tr.read.chars())
+      .iter()
+      .map(|x| if *x == BLANK_REP { BLANK } else { *x })
+      .collect();
+    // Characters writen.
+    let write: Vec<char> = Vec::from_iter(tr.write.chars())
+      .iter()
+      .map(|x| if *x == BLANK_REP { BLANK } else { *x })
+      .collect();
+    // Direction of each tape.
+    let direc = map_direction_vec(&tr.direction)?;
     if let Ok(x) = Transition::new(&write, &direc, tr.next) {
       // Create and insert a new transition.
       tm.insert_transition(tr.from, &read, &x)?;

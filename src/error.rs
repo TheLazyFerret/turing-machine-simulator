@@ -20,7 +20,7 @@ pub enum Error {
   TapeErrorCount,
   /// The vector inside the transitions doesn´t match
   TransitionSizeUnmatch,
-  /// Unkown direction
+  /// Unkown direction.
   UnkownDirection,
   /// Error parsing the toml file.
   ErrorParsing,
@@ -39,16 +39,16 @@ impl fmt::Display for Error {
         write!(f, "The number of tapes doesn't coincide with the transition.")
       },
       | Error::TapeErrorCount => {
-        write!(f, "The number of tapes must be 1 or more.")
+        write!(f, "The number of tapes must be altelast one.")
       },
       | Error::TransitionSizeUnmatch => {
-        write!(f, "The vec direction and write doesn´t match")
+        write!(f, "The vec direction and write size doesn't match.")
       },
       | Error::UnkownDirection => {
-        write!(f, "Found an unkown direction")
+        write!(f, "Found an unkown direction while parsing.")
       },
       | Error::ErrorParsing => {
-        write!(f, "Error parsing the toml file")
+        write!(f, "Found an error parsing the toml file.")
       },
     }
   }
