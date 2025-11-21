@@ -1,0 +1,16 @@
+"ntapes" = 1
+"accept" = [0]
+
+[[transition]]
+"from" = 0
+"next" = 1
+"read" = ['a']
+"write" = ['M']
+"direction" = ["Right"]
+
+[[transition]]
+"from" = 1
+"next" = 0
+"read" = ['a']
+"write" = ['M']
+"direction" = ["Right"]
