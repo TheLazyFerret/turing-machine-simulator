@@ -43,9 +43,9 @@ pub fn parse(rtm: &RawTuringMachine) -> Result<TuringMachine, TuringMachineError
   // For each transition.
   for tr in &rtm.transition {
     let mut read = Vec::from_iter(tr.read.chars()); // Characters readed.
-    read = read.iter().map(|x| if *x == BLANK_REP {BLANK} else {*x}).collect();
+    read = read.iter().map(|x| if *x == BLANK_REP {BLANK} else {*x}).collect(); // change the blank representation for blanks
     let mut write = Vec::from_iter(tr.write.chars()); // Characters writen.
-    write = write.iter().map(|x| if *x == BLANK_REP {BLANK} else {*x}).collect();
+    write = write.iter().map(|x| if *x == BLANK_REP {BLANK} else {*x}).collect(); // change the blank representation for blanks
     let direc = map_direction_vec(&tr.direction)?; // Direction of each tape.
     if let Ok(x) = Transition::new(&write, &direc, tr.next) { // Creates a new transition.
       tm.insert_transition(tr.from, &read, &x)?;
