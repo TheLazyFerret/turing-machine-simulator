@@ -24,11 +24,7 @@ pub struct Tape {
 impl Tape {
   /// Returns a new Empty tape.
   pub fn new() -> Self {
-    Tape {
-      n_half: Vec::new(),
-      p_half: Vec::from(&['\0']),
-      head: 0
-    }
+    Tape { n_half: Vec::new(), p_half: Vec::from(&['\0']), head: 0 }
   }
 
   /// Loads a string to the tape and reset the tape.
@@ -37,8 +33,7 @@ impl Tape {
     // The tape must have atleast one cell defined to work.
     if f.is_empty() {
       self.p_half = "\0".chars().collect();
-    }
-    else {
+    } else {
       self.p_half = f.chars().collect();
     }
     self.head = 0;
@@ -77,11 +72,13 @@ impl Tape {
   }
 
   /// Returns the size of the Tape, being the the sum of both halfs.
+  #[allow(unused)]
   pub fn size(&self) -> usize {
     self.n_half.len() + self.p_half.len()
   }
 
   /// Clean the current state of the object.
+  #[allow(unused)]
   fn clean(&mut self) {
     self.n_half.clear();
     self.p_half.clear();

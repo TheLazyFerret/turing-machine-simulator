@@ -104,7 +104,7 @@ impl TuringMachine {
 
   /// Add a transition to the Turing machine.
   /// Due the ammount of Tapes is known compile-time, it will take as parameters an array of
-  fn insert_transition(
+  pub fn insert_transition(
     &mut self, state: usize, read: &[char], tr: &Transition,
   ) -> Result<(), TuringMachineError> {
     if (tr.len() != self.ntapes) || (read.len() != self.ntapes) {
@@ -136,6 +136,10 @@ pub enum TuringMachineError {
   UnmatchingSizes,
   /// The number of tapes must be 1 or more.
   TapeErrorCount,
+  /// The vector inside the transitions doesn´t match
+  TransitionSizeUnmatch,
+  /// Unkown direction
+  UnkownDirection,
 }
 
 impl fmt::Display for TuringMachineError {
@@ -152,6 +156,12 @@ impl fmt::Display for TuringMachineError {
       },
       | TuringMachineError::TapeErrorCount => {
         write!(f, "The number of tapes must be 1 or more.")
+      },
+      | TuringMachineError::TransitionSizeUnmatch => {
+        write!(f, "The vec direction and write doesn´t match")
+      },
+      | TuringMachineError::UnkownDirection => {
+        write!(f, "Found an unkown direction")
       },
     }
   }
