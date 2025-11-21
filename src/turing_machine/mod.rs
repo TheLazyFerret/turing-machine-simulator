@@ -167,7 +167,7 @@ impl fmt::Display for TuringMachineError {
       },
       | TuringMachineError::ErrorParsing => {
         write!(f, "Error parsing the toml file")
-      }
+      },
     }
   }
 }

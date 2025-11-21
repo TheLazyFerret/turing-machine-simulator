@@ -5,11 +5,12 @@
 //!
 //! Main module for the parser.
 
-use std::collections::HashSet;
 use crate::turing_machine::{
-  BLANK, BLANK_REP, TuringMachine, TuringMachineError, transition::{Direction, Transition}
+  BLANK, BLANK_REP, TuringMachine, TuringMachineError,
+  transition::{Direction, Transition},
 };
-use serde::Deserialize; 
+use serde::Deserialize;
+use std::collections::HashSet;
 
 /// Struct representing an raw, not checked turing machine.
 #[derive(Debug, Default, Clone, Deserialize)]
@@ -43,11 +44,12 @@ pub fn parse(rtm: &RawTuringMachine) -> Result<TuringMachine, TuringMachineError
   // For each transition.
   for tr in &rtm.transition {
     let mut read = Vec::from_iter(tr.read.chars()); // Characters readed.
-    read = read.iter().map(|x| if *x == BLANK_REP {BLANK} else {*x}).collect(); // change the blank representation for blanks
+    read = read.iter().map(|x| if *x == BLANK_REP { BLANK } else { *x }).collect(); // change the blank representation for blanks
     let mut write = Vec::from_iter(tr.write.chars()); // Characters writen.
-    write = write.iter().map(|x| if *x == BLANK_REP {BLANK} else {*x}).collect(); // change the blank representation for blanks
+    write = write.iter().map(|x| if *x == BLANK_REP { BLANK } else { *x }).collect(); // change the blank representation for blanks
     let direc = map_direction_vec(&tr.direction)?; // Direction of each tape.
-    if let Ok(x) = Transition::new(&write, &direc, tr.next) { // Creates a new transition.
+    if let Ok(x) = Transition::new(&write, &direc, tr.next) {
+      // Create and insert a new transition.
       tm.insert_transition(tr.from, &read, &x)?;
     } else {
       return Err(TuringMachineError::TransitionSizeUnmatch);

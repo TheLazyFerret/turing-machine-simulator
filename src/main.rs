@@ -25,8 +25,7 @@ fn main() -> Result<(), TuringMachineError> {
   let test_string = "aa";
   if let Ok(x) = tm.run(test_string) {
     println!("\"{test_string}\" -> {x}");
-  }
-  else {
+  } else {
     println!("\"{test_string}\" -> error");
   }
   Ok(())
