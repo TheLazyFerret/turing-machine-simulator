@@ -4,7 +4,7 @@ CLI Turing machine simulator made completely on rust. Designed witht the idea on
 This program is able to simulate a multitape or singletape deterministic Turing machine.
 
 ## Usage
-```bash
+```
 Usage: turing-machine-simulator [OPTIONS] --turing-path <TURING_PATH> <STRING>
 
 Arguments:
@@ -19,13 +19,13 @@ Options:
 
 ## Turing machine configuration
 They are defined in a `.toml` file.
-```toml
+```
 ntapes = <integer>        # Number of tapes on the machine (minimum one).
 initial = <integer>       # The initial state.
 accept = <array<integer>> # Acceptance states.
 ```
 Then, each transitition is defined inside an array of tables.
-```toml
+```
 [[transitition]]
 from = <integer>            # The arrival state.
 next = <integer>            # The destiny state.
