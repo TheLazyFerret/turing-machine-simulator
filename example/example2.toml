@@ -1,0 +1,93 @@
+# Turing machine that recognizes the language (a^(n)b^(m)c^(n*m) | n, m >= 1).
+# Multitape (2).
+
+# Turing Machine configuration.
+ntapes = 2
+initial = 0
+accept = [5]
+
+# Each transititon configuration.
+
+[[transition]]
+from = 0
+next = 1
+read = "aβ"
+write = "Xβ"
+direction = "RS"
+
+[[transition]]
+from = 1
+next = 1
+read = "bβ"
+write = "bN"
+direction = "RR"
+
+[[transition]]
+from = 1
+next = 1
+read = "aβ"
+write = "aβ"
+direction = "RS"
+
+[[transition]]
+from = 1
+next = 2
+read = "cβ"
+write = "cβ"
+direction = "LS"
+
+[[transition]]
+from = 2
+next = 2
+read = "aβ"
+write = "aβ"
+direction = "LS"
+
+[[transition]]
+from = 2
+next = 2
+read = "bβ"
+write = "bβ"
+direction = "LS"
+
+[[transition]]
+from = 2
+next = 0
+read = "Xβ"
+write = "Xβ"
+direction = "RS"
+
+[[transition]]
+from = 0
+next = 3
+read = "bβ"
+write = "bβ"
+direction = "RS"
+
+[[transition]]
+from = 3
+next = 3
+read = "bβ"
+write = "bβ"
+direction = "RS"
+
+[[transition]]
+from = 3
+next = 4
+read = "cβ"
+write = "cβ"
+direction = "SL"
+
+[[transition]]
+from = 4
+next = 4
+read = "cN"
+write = "cN"
+direction = "RL"
+
+[[transition]]
+from = 4
+next = 5
+read = "ββ"
+write = "ββ"
+direction = "SS"

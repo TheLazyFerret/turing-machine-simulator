@@ -1,0 +1,23 @@
+# Turing machine that recognizes the language (a^(n) | n = even).
+# Singletape.
+
+# Turing Machine configuration.
+ntapes = 1
+initial = 0
+accept = [0]
+
+# Each transititon configuration.
+
+[[transition]]
+from = 0
+next = 1
+read = "aβ"
+write = "Mβ"
+direction = "RR"
+
+[[transition]]
+from = 1
+next = 0
+read = "aβ"
+write = "Mβ"
+direction = "RR"

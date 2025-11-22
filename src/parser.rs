@@ -33,7 +33,7 @@ struct RawTransition {
   next: usize,
   read: String,
   write: String,
-  direction: Vec<String>,
+  direction: String,
 }
 
 /// Tries to parse a toml to a RawTuringMachine.
@@ -67,23 +67,20 @@ pub fn parse(rtm: &RawTuringMachine) -> Result<TuringMachine, Error> {
   Ok(tm) // Return the TuringMachine.
 }
 
-/// From a String, convert into a Direction.
-fn convert_direction(d: &str) -> Result<Direction, Error> {
+/// From a char, convert into a Direction.
+fn convert_direction(d: char) -> Result<Direction, Error> {
   match d {
-    | "Left" => Ok(Direction::Left),
-    | "L" => Ok(Direction::Left),
-    | "Right" => Ok(Direction::Right),
-    | "R" => Ok(Direction::Right),
-    | "Stop" => Ok(Direction::Stop),
-    | "S" => Ok(Direction::Stop),
-    | _ => Err(Error::UnkownDirection(d.to_owned())),
+    | 'L' => Ok(Direction::Left),
+    | 'R' => Ok(Direction::Right),
+    | 'S' => Ok(Direction::Stop),
+    | _ => Err(Error::UnkownDirection(d.to_string())),
   }
 }
 
-/// From a Vector of string, convert into a Vector of Direction.
-fn map_direction_vec(dir: &[String]) -> Result<Vec<Direction>, Error> {
+/// From a string, convert into a Vector of Direction.
+fn map_direction_vec(dir: &String) -> Result<Vec<Direction>, Error> {
   let mut vec = Vec::new();
-  for d in dir {
+  for d in dir.chars() {
     let direction = convert_direction(d)?;
     vec.push(direction);
   }
@@ -101,7 +98,7 @@ pub struct Args {
   // /// Path where the tape steps will be saved.
   //#[arg(short, long)]
   //pub dump: Option<String>,
-  // /// Shell mode (no output, only returns 0 if accept or 1 otherwise)
+  /// Treat failures as errors.
   #[arg(short, long, action = clap::ArgAction::Count)]
   pub shell: u8,
 }
