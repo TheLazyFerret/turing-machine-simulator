@@ -20,9 +20,9 @@ Options:
 ## Turing machine configuration
 They are defined in a `.toml` file.
 ```
-ntapes = <integer>        # Number of tapes on the machine (minimum one).
-initial = <integer>       # The initial state.
-accept = <array<integer>> # Acceptance states.
+ntapes = <integer>         # Number of tapes on the machine (minimum one).
+initial = <integer>        # The initial state.
+accept = <array<integer>>  # Acceptance states.
 ```
 Then, each transitition is defined inside an array of tables.
 ```
