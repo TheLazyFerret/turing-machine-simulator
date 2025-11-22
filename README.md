@@ -3,6 +3,13 @@ CLI Turing machine simulator made completely on rust. Designed witht the idea on
 
 This program is able to simulate a multitape or singletape deterministic Turing machine.
 
+## Installation
+```bash
+git clone git@github.com:TheLazyFerret/turing-machine-simulator.git
+cd turing-machine-simulator
+cargo install .
+```
+
 ## Usage
 ```
 Usage: turing-machine-simulator [OPTIONS] --turing-path <TURING_PATH> <STRING>
