@@ -11,13 +11,13 @@ accept = [0]
 [[transition]]
 from = 0
 next = 1
-read = "aβ"
-write = "Mβ"
+read =      "aβ"
+write =     "Mβ"
 direction = "RR"
 
 [[transition]]
 from = 1
 next = 0
-read = "aβ"
-write = "Mβ"
+read =      "aβ"
+write =     "Mβ"
 direction = "RR"
