@@ -29,4 +29,6 @@ pub enum Error {
   ErrorOpenFile(String),
   #[error("Failed the test: {0}.")]
   Fail(String),
+  #[error("Error writting in file: {0}")]
+  ErrorWriteFile(String)
 }
