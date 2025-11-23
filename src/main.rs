@@ -11,44 +11,51 @@ mod turing_machine;
 
 use crate::error::Error;
 use crate::parser::Args;
-use crate::turing_machine::TuringMachine;
 use clap::Parser;
-use std::fs;
+use std::fs::File;
 use std::io::Read;
 
-/// test the string with shell flag, only return true or false to the shell.
-fn shell_run(string: &str, tm: &TuringMachine) -> Result<(), Error> {
-  if let Ok(x) = tm.run(string) {
-    if x == true {
-      Ok(())
-    }
-    else {
-      Err(Error::Fail(string.to_string()))
-    }
-  }
-  else {
-    Err(Error::Fail(string.to_string()))
+/// Print the result of the simulator run.
+fn print_result(string: &str, result: Result<bool, Error>) {
+  if result.is_err() {
+    println!("\"{string}\" -> {}", result.err().unwrap().to_string());
+  } else if result.unwrap() == true {
+    println!("\"{string}\" -> true");
+  } else {
+    println!("\"{string}\" -> false");
   }
 }
 
-/// Test the string and print in the screen the result.
-fn normal_run(string: &str, tm: &TuringMachine) {
-  let result = tm.run(string);
+/// If using the flag -s|--shell, return to the shell an error if not accepted.
+fn return_shell(string: &str, result: Result<bool, Error>) -> Result<(), Error> {
   if result.is_err() {
-    println!("\"{string}\" -> {}", result.err().unwrap().to_string());
+    return Err(Error::Fail(string.to_string()));
+  } else if result.is_ok() && result.unwrap() == false {
+    return Err(Error::Fail(string.to_string()));
+  } else {
+    return Ok(());
   }
-  else if result.unwrap() == true {
-    println!("\"{string}\" -> true");
-  }
-  else {
-    println!("\"{string}\" -> false");
+}
+
+/// Auxiliar function to get the dump file (if exists).
+fn get_dump_file(option: Option<String>) -> Result<Option<File>, Error> {
+  if option.is_some() {
+    let path = option.unwrap();
+    let result = File::create(path);
+    if result.is_err() {
+      Err(Error::ErrorOpenFile(result.err().unwrap().to_string()))
+    } else {
+      Ok(Some(result.unwrap()))
+    }
+  } else {
+    Ok(None)
   }
 }
 
 fn main() -> Result<(), Error> {
   let args: Args = Args::parse();
   // Open the Turing machine configuration file.
-  let turing_file = fs::File::open(args.turing_path);
+  let turing_file = File::open(args.turing_path);
   if turing_file.is_err() {
     return Err(Error::ErrorOpenFile(turing_file.err().unwrap().to_string()));
   }
@@ -64,12 +71,16 @@ fn main() -> Result<(), Error> {
   }
   // Parse the Turing configuration into a turing machine.
   let turing_machine = parser::parse(&rtm.unwrap())?;
-  // Preparing to run.
-  let string_to_test = args.string.clone();
+  // Get the string to test.
+  let test_string = args.string.clone();
+  // Get the dump file.
+  let dump_file = get_dump_file(args.dump)?;
   // Run.
+  let result = turing_machine.run(&test_string, dump_file);
   if args.shell > 0 {
-    return shell_run(&string_to_test, &turing_machine);
+    return return_shell(&test_string, result);
+  } else {
+    print_result(&test_string, result);
+    Ok(())
   }
-  normal_run(&string_to_test, &turing_machine);
-  Ok(())
 }

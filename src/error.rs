@@ -6,7 +6,6 @@
 //! Crate representing the Runtime errors.
 
 /// Enum representing the possible rutime errors.
-
 use thiserror::Error;
 
 #[derive(Clone, Debug, PartialEq, Eq, Error)]
@@ -30,5 +29,5 @@ pub enum Error {
   #[error("Failed the test: {0}.")]
   Fail(String),
   #[error("Error writting in file: {0}")]
-  ErrorWriteFile(String)
+  ErrorWriteFile(String),
 }

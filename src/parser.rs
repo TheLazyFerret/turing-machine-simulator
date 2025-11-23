@@ -96,8 +96,8 @@ pub struct Args {
   #[arg(short, long)]
   pub turing_path: String,
   // /// Path where the tape steps will be saved.
-  //#[arg(short, long)]
-  //pub dump: Option<String>,
+  #[arg(short, long)]
+  pub dump: Option<String>,
   /// Treat failures as errors.
   #[arg(short, long, action = clap::ArgAction::Count)]
   pub shell: u8,

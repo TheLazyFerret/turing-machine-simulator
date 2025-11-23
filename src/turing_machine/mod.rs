@@ -11,7 +11,11 @@ pub mod transition;
 use crate::error::Error;
 use crate::turing_machine::tape::Tape;
 use crate::turing_machine::transition::Transition;
-use std::collections::{HashMap, HashSet};
+use std::{
+  collections::{HashMap, HashSet},
+  fs::File,
+  io::Write,
+};
 
 /// Maximum ammount of steps a single run can do before being cancelled.
 const MAX_STEP: usize = 500;
@@ -46,13 +50,39 @@ impl TuringMachine {
     }
   }
 
+  /// Auxiliar function, that choose what type of run do depending of there is a file to dump or not.
+  pub fn run(&self, s: &str, file: Option<File>) -> Result<bool, Error> {
+    if file.is_some() {
+      let file = file.expect("Unexpected error opening option");
+      self.dump_run(s, file)
+    } else {
+      self.normal_run(s)
+    }
+  }
+
   /// Run the simulator, loading the string.
-  pub fn run(&self, s: &str) -> Result<bool, Error> {
+  fn normal_run(&self, s: &str) -> Result<bool, Error> {
     let mut tapes = vec![Tape::new(); self.ntapes];
     let mut current: usize = self.initial;
     let mut counter = 0;
     tapes.get_mut(0).unwrap().load_string(s);
     while self.step(&mut current, tapes.as_mut_slice()) {
+      if counter >= MAX_STEP {
+        return Err(Error::MaxStepsReached);
+      }
+      counter += 1;
+    }
+    Ok(self.acceptance.get(&current).is_some())
+  }
+
+  /// Run the simulator normally, but also dump into a file the state of the tapes.
+  fn dump_run(&self, s: &str, mut file: File) -> Result<bool, Error> {
+    let mut tapes = vec![Tape::new(); self.ntapes];
+    let mut current: usize = self.initial;
+    let mut counter = 0;
+    tapes.get_mut(0).unwrap().load_string(s);
+    while self.step(&mut current, tapes.as_mut_slice()) {
+      Self::write_tapes(counter, &tapes, &mut file)?;
       if counter >= MAX_STEP {
         return Err(Error::MaxStepsReached);
       }
@@ -95,6 +125,21 @@ impl TuringMachine {
       tape.1.write(char_to_write);
       tape.1.mov(direction_to_move);
     }
+  }
+
+  /// Dump the tapes current state to a file.
+  fn write_tapes(iterat: usize, tapes: &[Tape], file: &mut File) -> Result<(), Error> {
+    let string = format!("Step: {}\n", iterat);
+    if let Err(x) = file.write(string.as_bytes()) {
+      return Err(Error::ErrorWriteFile(x.to_string()));
+    }
+    for tape in tapes.iter().enumerate() {
+      let string = format!("{}: {}\n", tape.0, tape.1.to_string());
+      if let Err(x) = file.write(string.as_bytes()) {
+        return Err(Error::ErrorWriteFile(x.to_string()));
+      }
+    }
+    Ok(())
   }
 
   /// Add a transition to the Turing machine.
@@ -156,6 +201,6 @@ mod test {
     let tr1 = Transition::new(&vec!['M'], &vec![Direction::Right], 0).unwrap();
     tm.insert_transition(0, &vec!['a'], &tr0).expect("Unexpected error found adding transition");
     tm.insert_transition(1, &vec!['a'], &tr1).expect("Unexpected error found adding transition");
-    assert_eq!(tm.run(""), Ok(true));
+    assert_eq!(tm.run("", None), Ok(true));
   }
 }
