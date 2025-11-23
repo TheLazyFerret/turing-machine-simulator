@@ -95,7 +95,7 @@ pub struct Args {
   /// Path where the Turing machine configuration is located.
   #[arg(short, long)]
   pub turing_path: String,
-  // /// Path where the tape steps will be saved.
+  /// File where the state of the tapes will be dumped.
   #[arg(short, long)]
   pub dump: Option<String>,
   /// Treat failures as errors.

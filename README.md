@@ -19,6 +19,7 @@ Arguments:
 
 Options:
   -t, --turing-path <TURING_PATH>  Path where the Turing machine configuration is located
+  -d, --dump <DUMP>                File where the state of the tapes will be dumped
   -s, --shell...                   Treat failures as errors
   -h, --help                       Print help
   -V, --version                    Print version
