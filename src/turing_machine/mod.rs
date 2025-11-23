@@ -46,6 +46,7 @@ impl TuringMachine {
     }
   }
 
+  /// Run the simulator, loading the string.
   pub fn run(&self, s: &str) -> Result<bool, Error> {
     let mut tapes = vec![Tape::new(); self.ntapes];
     let mut current: usize = self.initial;
