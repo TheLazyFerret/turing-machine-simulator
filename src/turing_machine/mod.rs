@@ -18,7 +18,7 @@ use std::{
 };
 
 /// Maximum ammount of steps a single run can do before being cancelled.
-const MAX_STEP: usize = 500;
+const MAX_STEP: usize = 10000000;
 
 /// Struct representing a deterministic Turing machine.
 /// Inside the struct only will be present the definition of the TuringMachine.
