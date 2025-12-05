@@ -1,0 +1,45 @@
+ntapes = 2
+initial = 0
+accept = [3]
+
+[[transition]]
+from = 0
+next = 0
+read = "aβ"
+write = "aa"
+direction = "RR"
+
+[[transition]]
+from = 0
+next = 1
+read = "bβ"
+write = "bβ"
+direction = "SL"
+
+[[transition]]
+from = 1
+next = 1
+read = "ba"
+write = "ba"
+direction = "RL"
+
+[[transition]]
+from = 1
+next = 2
+read = "cβ"
+write = "cβ"
+direction = "SR"
+
+[[transition]]
+from = 2
+next = 2
+read = "ca"
+write = "ca"
+direction = "RR"
+
+[[transition]]
+from = 2
+next = 3
+read = "ββ"
+write = "ββ"
+direction = "SS"
