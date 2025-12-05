@@ -68,7 +68,7 @@ impl Tape {
     if self.head >= 0 {
       *self.p_half.get_mut(pos).expect("weird error accesing for write") = f;
     } else {
-      *self.p_half.get_mut(pos).expect("weird error accesing for write") = f;
+      *self.n_half.get_mut(pos).expect("weird error accesing for write") = f;
     }
   }
 
